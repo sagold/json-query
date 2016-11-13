@@ -1,0 +1,6 @@
+node_modules
+status.png
+build
+bower_components
+*.sublime-workspace
+*.sublime-project

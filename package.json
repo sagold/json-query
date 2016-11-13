@@ -1,0 +1,23 @@
+{
+  "name": "@sagold/json-query",
+  "version": "1.0.0",
+  "description": "json-pointer utilities for querying data",
+  "main": "lib/index.js",
+  "dependencies": {
+    "@sagold/json-conform": "^1.0.0",
+    "@sagold/json-pointer": "^1.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.1.2",
+    "watch": "^1.0.1",
+    "chai": "^3.5.0"
+  },
+  "scripts": {
+    "test": "mocha --recursive 'test/unit/*.test.js' -R spec; exit 0",
+    "tdd": "watch 'npm run test' lib/ app/ test/; exit 0",
+    "pub": "npm publish --access public"
+  },
+  "keywords": [],
+  "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
+  "license": "ISC"
+}
