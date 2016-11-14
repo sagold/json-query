@@ -2,11 +2,11 @@
 
 Install
 
-`npm i @sagold/json-query`
+`npm i gold-json-query`
 
 and use with
 
-`const jsonQuery = require("@sagold/json-query")`
+`const jsonQuery = require("gold-json-query")`
 
 
 At first, query acts like a normal **json-pointer** where its match is passed to the given callback function:
