@@ -57,11 +57,14 @@ and **glob-patterns** with `**`:
 		}
 	};
 	query.run(data, "#/**/id", function (value, key, object, jsonPointer) {
-		// will be called with value: "child-1" and "child-2"
+		// will be called with value: "parent" "child-1" and "child-2"
 	});
 ```
 
-To **filter** the matched objects an object-query string may be appended on each single step:
+or simply call `query.run(data, "#/**", callback)` to run callback on each object,array and value.
+
+
+To **filter** the matched objects, an object-query string may be appended on each single step:
 
 ```js
 	var query = require("gson-query");
@@ -73,6 +76,9 @@ To **filter** the matched objects an object-query string may be appended on each
 		"neighbour": {
 			"valid": false,
 			"child": {"id": "child-2"}
+		},
+		"dungeons": {
+			"child": {"id": "child-3"}
 		}
 	};
 	query.run(data, "#/**?valid:true&&ignore:undefined/child", function (value, key, object, jsonPointer) {
@@ -81,6 +87,10 @@ To **filter** the matched objects an object-query string may be appended on each
 	// same result with
 	query.run(data, "#/**?valid:!false/child", function (value, key, object, jsonPointer) { // ...
 ```
+
+or match all objects that have a defined property _valid_ like `query.run(data, "#/**?valid", callback)`.
+
+
 
 **regular expression** must be wrapped with `{.*}`:
 
@@ -128,6 +138,7 @@ Multiple items on objects or in arrays may also be delete with query.delete:
 
 - `query.run(data, "#/**/*", callback);` will iterate over each value of the data object
 - `query.run(data, "#/**?valid:true", callback);` will select all objects having its property "valid" set to `true`
+
 
 for further examples refer to the unit tests
 

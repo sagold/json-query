@@ -100,6 +100,12 @@ describe("filter", function () {
 		expect(result[0]).to.eq(obj.first);
 	});
 
+	it("should match all defined properties", function () {
+		var result = filter.values(obj, "*?type");
+
+		expect(result.length).to.eq(2);
+	});
+
 	describe("on array", function () {
 
 		it("should query * in array", function () {
