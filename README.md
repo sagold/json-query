@@ -2,23 +2,23 @@
 
 Install
 
-`npm i gold-json-query`
+`npm i gson-query`
 
 and use with
 
-`const jsonQuery = require("gold-json-query")`
+`const query = require("gson-query")`
 
 
 At first, query acts like a normal **json-pointer** where its match is passed to the given callback function:
 
 ```js
-	var query = require("query").run;
+	var query = require("gson-query");
 	var data = {
 		"parent": {
 			"child": {"id": "child-1"}
 		}
 	};
-	query(data, "#/parent/child/id", function (value, key, object, jsonPointer) {
+	query.run(data, "#/parent/child/id", function (value, key, object, jsonPointer) {
 		// value = "child-1",
 		// key = "id"
 		// object = {"id": "child-1"}
@@ -30,7 +30,7 @@ At first, query acts like a normal **json-pointer** where its match is passed to
 But query also supports **glob-patterns** with `*`:
 
 ```js
-	var query = require("query").run;
+	var query = require("gson-query");
 	var data = {
 		"parent": {
 			"child": {"id": "child-1"}
@@ -39,7 +39,7 @@ But query also supports **glob-patterns** with `*`:
 			"child": {"id": "child-2"}
 		}
 	};
-	query(data, "#/*/child/id", function (value, key, object, jsonPointer) {
+	query.run(data, "#/*/child/id", function (value, key, object, jsonPointer) {
 		// will be called with value: "child-1" and "child-2"
 	});
 ```
@@ -47,7 +47,7 @@ But query also supports **glob-patterns** with `*`:
 and **glob-patterns** with `**`:
 
 ```js
-	var query = require("query").run;
+	var query = require("gson-query");
 	var data = {
 		"parent": {
 			"child": {"id": "child-1"}
@@ -56,7 +56,7 @@ and **glob-patterns** with `**`:
 			"child": {"id": "child-2"}
 		}
 	};
-	query(data, "#/**/id", function (value, key, object, jsonPointer) {
+	query.run(data, "#/**/id", function (value, key, object, jsonPointer) {
 		// will be called with value: "child-1" and "child-2"
 	});
 ```
@@ -64,7 +64,7 @@ and **glob-patterns** with `**`:
 To **filter** the matched objects an object-query string may be appended on each single step:
 
 ```js
-	var query = require("query").run;
+	var query = require("gson-query");
 	var data = {
 		"parent": {
 			"valid": true,
@@ -75,23 +75,23 @@ To **filter** the matched objects an object-query string may be appended on each
 			"child": {"id": "child-2"}
 		}
 	};
-	query(data, "#/**?valid:true&&ignore:undefined/child", function (value, key, object, jsonPointer) {
+	query.run(data, "#/**?valid:true&&ignore:undefined/child", function (value, key, object, jsonPointer) {
 		// will be called with value: {"id": "child-1"} only
 	});
 	// same result with
-	query(data, "#/**?valid:!false/child", function (value, key, object, jsonPointer) { // ...
+	query.run(data, "#/**?valid:!false/child", function (value, key, object, jsonPointer) { // ...
 ```
 
 **regular expression** must be wrapped with `{.*}`:
 
 ```js
-	var query = require("query").run;
+	var query = require("gson-query");
 	var data = {
 		"albert": {valid: true},
 		"alfred": {valid: false},
 		"alfons": {valid: true}
 	};
-	query(data, "#/{al[^b]}?valid:true", function (value, key, object, jsonPointer) {
+	query.run(data, "#/{al[^b]}?valid:true", function (value, key, object, jsonPointer) {
 		// will be executed with value: alfons
 	});
 ```
@@ -102,7 +102,7 @@ To **filter** the matched objects an object-query string may be appended on each
 If you only require values or pointers, use queryGet to receive an Array as result:
 
 ```js
-	var queryGet = require("query").get;
+	var queryGet = require("gson-query").get;
 
 	// default: queryGet.VALUES
 	var arrayOfValues = queryGet(data, "#/**/id", queryGet.VALUE);
@@ -118,7 +118,7 @@ If you only require values or pointers, use queryGet to receive an Array as resu
 Multiple items on objects or in arrays may also be delete with query.delete:
 
 ```js
-	var queryDelete = require("query").delete;
+	var queryDelete = require("gson-query").delete;
 
 	queryDelete(data, "#/**/*/data");
 ```
@@ -126,8 +126,8 @@ Multiple items on objects or in arrays may also be delete with query.delete:
 
 ## Examples
 
-- `query(data, "#/**/*", callback);` will iterate over each value of the data object
-- `query(data, "#/**?valid:true", callback);` will select all objects having its property "valid" set to `true`
+- `query.run(data, "#/**/*", callback);` will iterate over each value of the data object
+- `query.run(data, "#/**?valid:true", callback);` will select all objects having its property "valid" set to `true`
 
 for further examples refer to the unit tests
 
