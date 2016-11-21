@@ -8,30 +8,33 @@ and use with
 
 `const query = require("gson-query")`
 
-
-At first, query acts like a normal **json-pointer** where its match is passed to the given callback function:
+At first, **json-query** acts like a normal [**json-pointer**](https://github.com/sagold/json-pointer) where its match
+is passed to the given callback function:
 
 ```js
-	var query = require("gson-query");
-	var data = {
+	const query = require("gson-query");
+	const data = {
 		"parent": {
 			"child": {"id": "child-1"}
 		}
 	};
-	query.run(data, "#/parent/child/id", function (value, key, object, jsonPointer) {
-		// value = "child-1",
+	query.run(data, "#/parent/child/id", (value, key, object, jsonPointer) => {
+		// value = "child-1"
 		// key = "id"
 		// object = {"id": "child-1"}
 		// jsonPointer = "#/parent/child/id"
 	});
+	// or get the result in an array
+	var match = query.get(data, "#/parent/child/id");
+	// [ ["child-1", "id", {"id":"child-1"}, "#/parent/child/id"] ]
 ```
 
 
 But query also supports **glob-patterns** with `*`:
 
 ```js
-	var query = require("gson-query");
-	var data = {
+	const query = require("gson-query");
+	const data = {
 		"parent": {
 			"child": {"id": "child-1"}
 		},
@@ -42,6 +45,9 @@ But query also supports **glob-patterns** with `*`:
 	query.run(data, "#/*/child/id", function (value, key, object, jsonPointer) {
 		// will be called with value: "child-1" and "child-2"
 	});
+	// or get the result in an array
+	var match = query.get(data, "#/parent/child/id");
+	// [ ["child-1", ...], ["child-2", ...] ]
 ```
 
 and **glob-patterns** with `**`:
