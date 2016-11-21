@@ -1,6 +1,6 @@
 {
   "name": "gson-query",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "json-pointer utilities for querying data",
   "main": "lib/index.js",
   "dependencies": {
