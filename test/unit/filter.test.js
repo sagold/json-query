@@ -82,7 +82,7 @@ describe("filter", function () {
 	});
 
 	it("should return empty array if object invalid", function () {
-		var result = filter.values(false, "first?type:false");
+		var result = filter.values(null, "first?type:false");
 
 		expect(result.length).to.eq(0);
 	});
