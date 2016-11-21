@@ -7,6 +7,11 @@
     "type": "git",
     "url": "https://github.com/sagold/json-query.git"
   },
+  "scripts": {
+    "test": "mocha --recursive 'test/unit/*.test.js' -R spec; exit 0",
+    "tdd": "watch 'npm run test' lib/ app/ test/; exit 0",
+    "debug": "devtool node_modules/mocha/bin/_mocha -qc -- --recursive test/unit/*.test.js"
+  },
   "dependencies": {
     "gson-conform": "^1.0.2",
     "gson-pointer": "^1.0.3"
@@ -15,10 +20,6 @@
     "mocha": "^3.1.2",
     "watch": "^1.0.1",
     "chai": "^3.5.0"
-  },
-  "scripts": {
-    "test": "mocha --recursive 'test/unit/*.test.js' -R spec; exit 0",
-    "tdd": "watch 'npm run test' lib/ app/ test/; exit 0"
   },
   "keywords": [],
   "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
