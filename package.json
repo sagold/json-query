@@ -3,6 +3,10 @@
   "version": "1.0.4",
   "description": "json-pointer utilities for querying data",
   "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sagold/json-query.git"
+  },
   "dependencies": {
     "gson-conform": "^1.0.2",
     "gson-pointer": "^1.0.3"
