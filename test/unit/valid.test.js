@@ -14,6 +14,18 @@ describe("valid", function () {
 		expect(is_valid).to.be.false;
 	});
 
+	it("should return true if query is missing", function () {
+		var is_valid = valid({});
+
+		expect(is_valid).to.be.true;
+	});
+
+	it("should return false if no data is given", function () {
+		var is_valid = valid(null, "type:undefined");
+
+		expect(is_valid).to.be.false;
+	});
+
 	it("should return true if query has matches", function () {
 		var is_valid = valid({
 
