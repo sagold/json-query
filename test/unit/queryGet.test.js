@@ -50,4 +50,16 @@ describe("queryGet", function () {
 		expect(result).to.have.length(4);
 		expect(result).to.contain("#/a", "#/b", "#/b/d", "#/c/e/f");
 	});
+
+	it("should return an object that maps pointers to their respective value", function () {
+		var result = queryGet(data, "#/**/*?needle:needle", queryGet.MAP);
+
+		expect(result).to.be.an("object");
+		expect(result).to.deep.equal({
+			"#/a": data.a,
+			"#/b": data.b,
+			"#/b/d": data.b.d,
+			"#/c/e/f": data.c.e.f
+		});
+	});
 });
