@@ -115,7 +115,7 @@ or match all objects that have a defined property _valid_ like `query.run(data, 
 
 ## queryGet
 
-If you only require values or pointers, use queryGet to receive an Array as result:
+If you only require values or pointers, use queryGet to receive an Array or Object as result:
 
 ```js
 	var queryGet = require("gson-query").get;
@@ -126,6 +126,8 @@ If you only require values or pointers, use queryGet to receive an Array as resu
 	var arrayOfJsonPointers = queryGet(data, "#/**/id", queryGet.POINTER);
 	// [arguments, arguments], where arguments = 0:value 1:object 2:key 3:jsonPointer
 	var arrayOfAllFourArguments = queryGet(data, "#/**/id", queryGet.ALL);
+	// {"#/..": value, "#/..": value}
+	var mapOfPointersAndData = queryGet(data, "#/**/id", queryGet.MAP);
 ```
 
 
