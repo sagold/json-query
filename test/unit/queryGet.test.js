@@ -62,4 +62,13 @@ describe("queryGet", function () {
 			"#/c/e/f": data.c.e.f
 		});
 	});
+
+	it("should return custom functions return values", function () {
+		var result = queryGet(data, "#/**/*?needle:needle", function cb(val, key, parent, pointer) {
+			return "custom-" + pointer;
+		});
+
+		expect(result).to.have.length(4);
+		expect(result).to.contain("custom-#/a", "custom-#/b", "custom-#/b/d", "custom-#/c/e/f");
+	});
 });
