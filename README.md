@@ -128,6 +128,9 @@ var arrayOfJsonPointers = queryGet(data, "#/**/id", queryGet.POINTER);
 var arrayOfAllFourArguments = queryGet(data, "#/**/id", queryGet.ALL);
 // {"#/..": value, "#/..": value}
 var mapOfPointersAndData = queryGet(data, "#/**/id", queryGet.MAP);
+// {"#/..": value, "#/..": value}
+var mapOfPointersAndData = queryGet(data, "#/**/id", (val, key, parent, pointer) => `custom-${pointer}`);
+// ["custom-#/parent/child/id", "custom-#/neighbour/child/id", "dungeons-#/neighbour/child/id"]
 ```
 
 
