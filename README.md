@@ -1,4 +1,4 @@
-# Json Query
+# gson query
 
 Install
 
