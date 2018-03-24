@@ -3,6 +3,8 @@ const program = require("commander");
 const chalk = require("chalk");
 const get = require("../lib/get");
 const { readFile } = require("fs");
+const format = require("./utils/format");
+const loadData = require("./utils/loadData");
 
 const qStr = chalk.underline("query");
 const gStr = chalk.bold("gq");
@@ -72,28 +74,6 @@ program
     .parse(process.argv);
 
 
-function loadData(command) {
-    if (command.pipe === true) {
-        return new Promise((resolve, reject) => {
-            let data = "";
-            process.stdin.resume();
-            process.stdin.setEncoding('utf8');
-            process.stdin.on('data', (chunk) => (data += chunk));
-            process.stdin.on('end', () => resolve(data));
-            process.stdin.on('error', reject);
-        });
-    }
-
-    return new Promise((resolve, reject) => {
-        readFile(command.filename, 'utf-8', (err, data) => {
-            if (err) {
-                return reject(err);
-            }
-            return resolve(data);
-        })
-    });
-}
-
 function runQuery(data, program) {
     const queryString = program.args[0];
     let matches;
@@ -131,20 +111,6 @@ function runQuery(data, program) {
     while (matches.length) {
         console.log(matches.shift());
     }
-}
-
-function format(program, value) {
-    let asJson = program.json;
-    if (Object.prototype.toString.call(value) === "[object Object]" || Array.isArray(value)) {
-        asJson = true;
-    }
-    if (program.beautify) {
-        return JSON.stringify(value, null, 2);
-    }
-    if (asJson) {
-        return JSON.stringify(value);
-    }
-    return value;
 }
 
 program.pipe = process.stdin.isTTY == null;
