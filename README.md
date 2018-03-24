@@ -205,5 +205,14 @@ for further examples refer to the unit tests
 
 ## CLI
 
+> You can use gson-query as a commandline tool with `gq`.
 
+Usage: `$ gq query -f filename`
+
+Pipe Usage: `$ cat some.json | gq query`
+
+Example: `$ gq '/dependencies/*' -f package.json` will print all dependency versions
+
+
+For further details and options checkout `$ gq -h` or read the [description in source](./lib/gq.js)
 

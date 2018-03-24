@@ -1,8 +1,11 @@
 {
   "name": "gson-query",
   "version": "1.2.1",
-  "description": "json-pointer utilities for querying data",
+  "description": "json-pointer utilities for querying and transforming data",
   "main": "lib/index.js",
+  "bin": {
+    "gq": "bin/gq.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/sagold/gson-query.git"
@@ -13,15 +16,24 @@
     "debug": "devtool node_modules/mocha/bin/_mocha -qc -- --recursive test/unit/*.test.js"
   },
   "dependencies": {
+    "chalk": "^2.3.2",
+    "commander": "^2.15.1",
     "gson-conform": "^1.0.2",
     "gson-pointer": "^1.0.3"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^4.19.1",
     "mocha": "^3.1.2",
-    "watch": "^1.0.1",
-    "chai": "^3.5.0"
+    "watch": "^1.0.1"
   },
-  "keywords": [],
+  "keywords": [
+    "query",
+    "json",
+    "json-pointer",
+    "glob-pattern",
+    "library"
+  ],
   "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
-  "license": "ISC"
+  "license": "MIT"
 }
