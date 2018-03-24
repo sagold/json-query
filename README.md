@@ -214,5 +214,5 @@ Pipe Usage: `$ cat some.json | gq query`
 Example: `$ gq '/dependencies/*' -f package.json` will print all dependency versions
 
 
-For further details and options checkout `$ gq -h` or read the [description in source](./lib/gq.js)
+For further details and options checkout `$ gq -h` or read the [description in source](./bin/gq.js)
 
