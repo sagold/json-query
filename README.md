@@ -16,6 +16,7 @@ and get it like
 - [Introduction](#quick-introduction)
 - [API](#api)
   - [query](#query)
+  - [callback](#callback)
   - [query.run](#query.run)
   - [query.get](#query.get)
   - [query.delete](#query.delete)
@@ -227,8 +228,14 @@ const result = query.get(data, "#/{al[^b]}?valid:true", query.get.POINTER);
 If you want a callback on each match use `query.run(data:object|array, query:string, callback:function):void`
 
 ```js
-query.run(data, "#/**/*?valid", (value, key, parent, pointer) => {});
+query.run(data, "#/**/*?valid", (value, key, parent, jsonPointer) => {});
 ```
+
+
+### callback
+
+Each **callback** has the following signature
+`callback(value:any, key:string, parent:object|array, jsonPointer:string)`
 
 ```js
 /**
@@ -243,7 +250,7 @@ function callback(value, key, parent, jsonPointer) => { /* do sth */ }
 
 ### query.get
 
-If you only require values or pointers, use `query.get(data:object|array, query:string, type:TYPE = "all")` to receive an Array or Object as result:
+If you only require values or pointers, use `query.get(data:object|array, query:string, type:TYPE = "all")` to receive an Array or Object as result
 
 ```js
 // default: query.get.VALUES
