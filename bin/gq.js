@@ -6,6 +6,8 @@ const { readFile } = require("fs");
 
 const qStr = chalk.underline("query");
 const gStr = chalk.bold("gq");
+const pStr = chalk.bold("pattern");
+
 
 
 program
@@ -29,7 +31,7 @@ program
     https://github.com/sagold/gson-query
 
     ${chalk.bold("Pattern")}
-    For a custom output a pattern may be given, which is a string containing
+    For customized output a ${pStr} may be given, which is a string containing
     variables (%name) which will be replaced by the specified contents.
 
     Example pattern: $ gq -p '%number/%total %pointer: %value'
