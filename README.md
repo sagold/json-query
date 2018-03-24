@@ -213,7 +213,7 @@ Pipe Usage: `$ cat some.json | gq query`
 
 Example: `$ gq '/dependencies/*' -f package.json` will print all dependency versions
 
-```sh
+```
 $ gq -h
 
   Usage: gq [options] query
