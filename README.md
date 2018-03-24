@@ -243,7 +243,7 @@ function callback(value, key, parent, jsonPointer) => { /* do sth */ }
 
 ### query.get
 
-If you only require values or pointers, use `query.get(data:object|array, query:string, type:TYPE):array|object` to receive an Array or Object as result:
+If you only require values or pointers, use `query.get(data:object|array, query:string, type:TYPE = "all")` to receive an Array or Object as result:
 
 ```js
 // default: query.get.VALUES
