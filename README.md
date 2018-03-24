@@ -213,6 +213,60 @@ Pipe Usage: `$ cat some.json | gq query`
 
 Example: `$ gq '/dependencies/*' -f package.json` will print all dependency versions
 
+```sh
+$ gq -h
+
+  Usage: gq [options] query
+
+  DESCRIPTION
+    The gq utility will apply the query on the given json data and write
+    any results to the standard output. Per default, each result is written per
+    line.
+
+    Query
+    A basic query describes a path from the root of a json object to the
+    target destination, e.g. '/first/property'. To find multiple matches replace
+    any property with a wildcard '*', e.g. '/first/*' wich will return any
+    property from 'first'. To search independent of the depth of a target, use
+    the glob-pattern '**', e.g. '/**/second' will return any property 'second'
+    regardless of the depth within the json file.
+
+    To further narrow down the search result, use a regular expression like
+    '/**/{alf.*}' and/or add additional queries to the targets property
+    structure with '/**?alf:!undefined&&alf:!true'. For further details goto
+    https://github.com/sagold/gson-query
+
+    Pattern
+    For a custom output a pattern may be given, which is a string containing
+    variables (%name) which will be replaced by the specified contents.
+
+    Example pattern: $ gq -p '%number/%total %pointer: %value'
+
+    Valid variable names are:
+    * value     - the matching value
+    * key       - the property name of the match
+    * parent    - the value of the parent (which contains the match)
+    * pointer   - the json-pointer to the target
+    * index     - the index of the match
+    * position  - the position of the match (index starting at 1)
+    * total     - the total number of matches
+
+    Examples
+    $ gq -f demo.json '/nodes/*/services/*?state:!healthy'
+    $ cat demo.json | gq '/nodes/*/services/*?state:!healthy'
+
+  Options:
+
+    -f, --filename <filename>  reads the json data from the given file
+    -j, --json                 print the result in json format (one-liner).
+                               Will always json-print objects and arrays
+    -b, --beautify             pretty print the result in json format (multiple lines)
+    -p, --pattern <pattern>    print the result in the given pattern.
+                               Keys: %value, %key, %parent, %pointer, %index, %count
+    -t, --target               returns the json-pointer of each match (instead of its value)
+    -d, --debug                show stack trace of errors
+    -h, --help                 output usage information
+```
 
 For further details and options checkout `$ gq -h` or read the [description in source](./bin/gq.js)
 
