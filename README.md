@@ -69,7 +69,7 @@ let data = {
         "child": {"id": "child-1"}
     }
 };
-query.run(data, "#/parent/child/id", (value, key, object, jsonPointer) => {
+query.run(data, "#/parent/child/id", (value, key, parent, jsonPointer) => {
     // value = "child-1"
     // key = "id"
     // object = {"id": "child-1"}
@@ -93,7 +93,7 @@ let data = {
         "child": {"id": "child-2"}
     }
 };
-query.run(data, "#/*/child/id", function (value, key, object, jsonPointer) {
+query.run(data, "#/*/child/id", function (value, key, parent, jsonPointer) {
     // will be called with value: "child-1" and "child-2"
 });
 // or get the result in an array
@@ -113,7 +113,7 @@ let data = {
         "child": {"id": "child-2"}
     }
 };
-query.run(data, "#/**/id", function (value, key, object, jsonPointer) {
+query.run(data, "#/**/id", function (value, key, parent, jsonPointer) {
     // will be called with value: "parent" "child-1" and "child-2"
 });
 ```
@@ -138,11 +138,11 @@ let data = {
         "child": {"id": "child-3"}
     }
 };
-query.run(data, "#/**?valid:true&&ignore:undefined/child", function (value, key, object, jsonPointer) {
+query.run(data, "#/**?valid:true&&ignore:undefined/child", function (value, key, parent, jsonPointer) {
     // will be called with value: {"id": "child-1"} only
 });
 // same result with
-query.run(data, "#/**?valid:!false/child", function (value, key, object, jsonPointer) { // ...
+query.run(data, "#/**?valid:!false/child", function (value, key, parent, jsonPointer) { /* do sth */ });
 ```
 
 or match all objects that have a defined property _valid_ like `query.run(data, "#/**?valid", callback)`.
@@ -158,7 +158,7 @@ let data = {
     "alfred": {valid: false},
     "alfons": {valid: true}
 };
-query.run(data, "#/{al[^b]}?valid:true", function (value, key, object, jsonPointer) {
+query.run(data, "#/{al[^b]}?valid:true", function (value, key, parent, jsonPointer) {
     // will be executed with value: alfons
 });
 ```
