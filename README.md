@@ -14,8 +14,11 @@ and get it like
 
 
 - [Quick introduction](#quick-introduction)
-- [Introduction](#introduction)
-- [CLI](#cli)
+- Introduction
+    - [query.run](#introduction)
+    - [query.get](#queryget)
+    - [query.delete](#querydelete)
+- [cli](#cli)
 
 
 ## Quick introduction
@@ -207,11 +210,11 @@ for further examples refer to the unit tests
 
 > You can use gson-query as a commandline tool with `gq`.
 
-Usage: `$ gq query -f filename`
+- Installation `npm install gson-query -g`
+- Usage: `gq query -f filename`
+- Pipe Usage: `cat some.json | gq query`
+- Example: `gq '/keywords/*' -f package.json` will print all keywords
 
-Pipe Usage: `$ cat some.json | gq query`
-
-Example: `$ gq '/keywords/*' -f package.json` will print all keywords
 
 ```
 $ gq -h
@@ -281,5 +284,6 @@ $ gq -h
     -h, --help                 output usage information
 ```
 
-For further details and options checkout `$ gq -h` or read the [description in source](./bin/gq.js)
+For further details and options checkout `$ gq -h`.
+
 
