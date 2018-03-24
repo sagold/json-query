@@ -9,7 +9,6 @@ const gStr = chalk.bold("gq");
 const pStr = chalk.bold("pattern");
 
 
-
 program
     .usage("[options] query")
     .description(`${chalk.bold("DESCRIPTION")}
@@ -17,7 +16,7 @@ program
     any results to the standard output. Per default, each result is written per
     line.
 
-    ${chalk.bold("Query")}
+    ${chalk.bold("query")}
     A basic ${qStr} describes a path from the root of a json object to the
     target destination, e.g. '/first/property'. To find multiple matches replace
     any property with a wildcard '*', e.g. '/first/*' wich will return any
@@ -30,30 +29,46 @@ program
     structure with '/**?alf:!undefined&&alf:!true'. For further details goto
     https://github.com/sagold/gson-query
 
-    ${chalk.bold("Pattern")}
+    ${chalk.bold("value formats")}
+    Value formats can be modified with options
+    -j  value as valid json value in one line (default for objects and arrays)
+    -b  value as valid json format, multiple lines
+
+    ${chalk.bold("output options")}
+    Different output options may be specified. A per line output is set by
+    default, but can be changed in the following order (highest option matches
+    first)
+    -a  prints all matches in one valid json array like [ %value ]
+    -o  prints all matches in one valid json object like { %pointer: %value }
+    -p  specifies a pattern for per line output
+    -t  prints json-pointer of matches per line
+
+    ${chalk.bold("pattern")}
     For customized output a ${pStr} may be given, which is a string containing
     variables (%name) which will be replaced by the specified contents.
 
     Example pattern: $ gq -p '%number/%total %pointer: %value'
 
     Valid variable names are:
-    * value     - the matching value
-    * key       - the property name of the match
-    * parent    - the value of the parent (which contains the match)
-    * pointer   - the json-pointer to the target
-    * index     - the index of the match
-    * position  - the position of the match (index starting at 1)
-    * total     - the total number of matches
+    %value     - the matching value
+    %key       - the property name of the match
+    %parent    - the value of the parent (which contains the match)
+    %pointer   - the json-pointer to the target
+    %index     - the index of the match
+    %position  - the position of the match (index starting at 1)
+    %total     - the total number of matches
 
     ${chalk.bold("Examples")}
     $ gq -f demo.json '/nodes/*/services/*?state:!healthy'
     $ cat demo.json | gq '/nodes/*/services/*?state:!healthy'`)
+    .option("-a, --array", `print ${chalk.bold("all")} matches as a valid json like [%match]. Overrides -o, -t, -p.`)
+    .option("-b, --beautify", "pretty print the result in json format (multiple lines)")
+    .option("-d, --debug", "show stack trace of errors")
     .option("-f, --filename <filename>", "reads the json data from the given file")
     .option("-j, --json", "print the result in json format (one-liner). Will always json-print objects and arrays")
-    .option("-b, --beautify", "pretty print the result in json format (multiple lines)")
-    .option("-p, --pattern <pattern>", "print the result in the given pattern. Keys: %value, %key, %parent, %pointer, %index, %count")
+    .option("-o, --object", `print ${chalk.bold("all")} matches as a valid json map {%pointer: %match}. Overrides -t -p.`)
+    .option("-p, --pattern <pattern>", "print the result in the given pattern. @see pattern description")
     .option("-t, --target", "returns the json-pointer of each match (instead of its value)")
-    .option("-d, --debug", "show stack trace of errors")
     .parse(process.argv);
 
 
@@ -83,6 +98,18 @@ function runQuery(data, program) {
     const queryString = program.args[0];
     let matches;
 
+    if (program.array) {
+        matches = get(data, queryString, get.VALUE);
+        console.log(format(program, matches));
+        return;
+    }
+
+    if (program.object) {
+        matches = get(data, queryString, get.MAP);
+        console.log(format(program, matches));
+        return;
+    }
+
     if (program.pattern) {
         matches = get(data, queryString, get.ALL);
         matches = matches.map((args, index) => {
@@ -111,7 +138,7 @@ function format(program, value) {
     if (Object.prototype.toString.call(value) === "[object Object]" || Array.isArray(value)) {
         asJson = true;
     }
-    if (program.pretty) {
+    if (program.beautify) {
         return JSON.stringify(value, null, 2);
     }
     if (asJson) {
