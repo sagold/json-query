@@ -1,0 +1,90 @@
+{
+  globals: {
+    es6: true,
+    define: false,
+    it: false
+  },
+
+  env: {
+    node: true,                               // Node.js global variables and Node.js scoping
+    mocha: true,                              // Adds all of the Mocha testing global variables
+    commonjs: false
+  },
+
+  rules: {
+
+    /**
+     * ECMAScript 6
+     */
+    'arrow-body-style': [2, 'as-needed', {  // http://eslint.org/docs/rules/arrow-body-style
+      requireReturnForObjectLiteral: false
+    }],
+    'arrow-parens': [2, "always"],          // http://eslint.org/docs/rules/arrow-parens
+    'arrow-spacing': [2, {                  // http://eslint.org/docs/rules/arrow-spacing
+      before: true,
+      after: true
+    }],
+    'constructor-super': 2,                 // http://eslint.org/docs/rules/constructor-super
+    'generator-star-spacing': [2, {         // http://eslint.org/docs/rules/generator-star-spacing
+      before: false,
+      after: true
+    }],
+    'no-class-assign': 2,                   // http://eslint.org/docs/rules/no-class-assign
+    'no-confusing-arrow': [2, {             // http://eslint.org/docs/rules/no-confusing-arrow
+      allowParens: true
+    }],
+    'no-const-assign': 2,                   // http://eslint.org/docs/rules/no-const-assign
+    'no-dupe-class-members': 2,             // http://eslint.org/docs/rules/no-dupe-class-members
+    'no-duplicate-imports': [2, {           // http://eslint.org/docs/rules/no-duplicate-imports
+      includeExports: true
+    }],
+    'no-new-symbol': 2,                     // http://eslint.org/docs/rules/no-new-symbol
+    'no-restricted-imports': 0,             // http://eslint.org/docs/rules/no-restricted-imports
+    'no-this-before-super': 2,              // http://eslint.org/docs/rules/no-this-before-super
+    'no-unused-expressions': 0,
+    'no-useless-computed-key': 2,           // http://eslint.org/docs/rules/no-useless-computed-key
+    'no-useless-constructor': 2,            // http://eslint.org/docs/rules/no-useless-constructor
+    'no-useless-rename': 1,                 // http://eslint.org/docs/rules/no-useless-rename
+    'no-var': 0,                            // http://eslint.org/docs/rules/no-var
+    'object-shorthand': [2, 'always'],      // http://eslint.org/docs/rules/object-shorthand
+    'prefer-arrow-callback': [1, {          // http://eslint.org/docs/rules/prefer-arrow-callback
+      allowNamedFunctions: true
+    }],
+    'prefer-const': [0, {                   // http://eslint.org/docs/rules/prefer-const
+      destructuring: 'any',
+      ignoreReadBeforeAssign: false
+    }],
+    'prefer-destructuring': [1, {           // http://eslint.org/docs/rules/prefer-destructuring
+      array: true,
+      object: true
+    }, {
+      enforceForRenamedProperties: false
+    }],
+    'prefer-numeric-literals': 1,           // http://eslint.org/docs/rules/prefer-numeric-literals
+    'prefer-rest-params': 1,                // http://eslint.org/docs/rules/prefer-rest-params
+    'prefer-spread': 1,                     // http://eslint.org/docs/rules/prefer-spread
+    'prefer-template': 1,                   // http://eslint.org/docs/rules/prefer-template
+    'require-yield': 2,                     // http://eslint.org/docs/rules/require-yield
+    'rest-spread-spacing': [2, 'never'],    // http://eslint.org/docs/rules/rest-spread-spacing
+    'sort-imports': 0,                      // http://eslint.org/docs/rules/sort-imports
+    'symbol-description': 1,                // http://eslint.org/docs/rules/symbol-description
+    'template-curly-spacing': [2, 'never'], // http://eslint.org/docs/rules/template-curly-spacing
+    'yield-star-spacing': [1, 'after'],     // http://eslint.org/docs/rules/yield-star-spacing
+
+    'promise/no-native': 0,                  // Native promises are available in ES6 environments
+
+    /**
+     * Node.js
+     */
+    'callback-return': [1, ['callback', 'cb', 'next', 'done']], // http://eslint.org/docs/rules/callback-return
+    'global-require': 0,                      // http://eslint.org/docs/rules/global-require
+    'handle-callback-err': [2, '^.*(e|E)rr(or)?'], // http://eslint.org/docs/rules/handle-callback-err
+    'no-mixed-requires': 0,                   // http://eslint.org/docs/rules/no-mixed-requires
+    'no-new-require': 1,                      // http://eslint.org/docs/rules/no-new-require
+    'no-path-concat': 1,                      // http://eslint.org/docs/rules/no-path-concat
+    'no-process-env': 0,                      // http://eslint.org/docs/rules/no-process-env
+    'no-process-exit': 1,                     // http://eslint.org/docs/rules/no-process-exit
+    'no-restricted-modules': 0,               // http://eslint.org/docs/rules/no-restricted-modules
+    'no-sync': 1                              // http://eslint.org/docs/rules/no-sync
+  }
+}

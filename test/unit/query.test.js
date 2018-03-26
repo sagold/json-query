@@ -1,18 +1,15 @@
-"use strict";
+const { expect } = require("chai");
+const query = require("../../lib");
 
 
-var expect = require("chai").expect;
-var query = require("../../lib");
-
-
-describe("query", function () {
+describe("query", () => {
 
     var cbMock;
 
-    beforeEach(function () {
+    beforeEach(() => {
 
-        cbMock = function cbMock(value) {
-            cbMock.args.push(arguments);
+        cbMock = (...args) => {
+            cbMock.args.push(args);
             cbMock.called = true;
         };
 
@@ -20,11 +17,11 @@ describe("query", function () {
         cbMock.args = [];
     });
 
-    it("should callback for matched jsonpointer", function () {
+    it("should callback for matched jsonpointer", () => {
 
         query.run({
-            "first": {
-                "value": "text"
+            first: {
+                value: "text"
             }
         }, "/first", cbMock);
 
@@ -33,11 +30,11 @@ describe("query", function () {
         expect(cbMock.args[0][0].value).to.eq("text");
     });
 
-    it("should callback with value, key, object and pointer", function () {
+    it("should callback with value, key, object and pointer", () => {
 
         query.run({
-            "first": {
-                "value": "text"
+            first: {
+                value: "text"
             }
         }, "/first", cbMock);
 
@@ -47,11 +44,11 @@ describe("query", function () {
         expect(cbMock.args[0][3]).to.eq("#/first");
     });
 
-    it("should callback on nested objects", function () {
+    it("should callback on nested objects", () => {
 
         query.run({
-            "first": {
-                "value": "text"
+            first: {
+                value: "text"
             }
         }, "/first/value", cbMock);
 
@@ -60,11 +57,11 @@ describe("query", function () {
         expect(cbMock.args[0][3]).to.eq("#/first/value");
     });
 
-    it("should callback only if match", function () {
+    it("should callback only if match", () => {
 
         query.run({
-            "first": {
-                "value": "text"
+            first: {
+                value: "text"
             }
         }, "/first/second", cbMock);
 
@@ -73,15 +70,15 @@ describe("query", function () {
     });
 
 
-    describe("*", function () {
+    describe("*", () => {
 
-        it("should callback on all items", function () {
+        it("should callback on all items", () => {
 
             query.run({
-                "first": {
-                    "value": "text"
+                first: {
+                    value: "text"
                 },
-                "second": "last"
+                second: "last"
             }, "/*", cbMock);
 
             expect(cbMock.called).to.be.true;
@@ -90,17 +87,17 @@ describe("query", function () {
             expect(cbMock.args[1][3]).to.eq("#/second");
         });
 
-        it("should continue for all found items", function () {
+        it("should continue for all found items", () => {
 
             query.run({
-                "first": {
-                    "value": "first"
+                first: {
+                    value: "first"
                 },
-                "second": {
-                    "value": "second"
+                second: {
+                    value: "second"
                 },
-                "third": {
-                    "value": "third"
+                third: {
+                    value: "third"
                 }
 
             }, "/*/value", cbMock);
@@ -113,16 +110,16 @@ describe("query", function () {
     });
 
 
-    describe("filter", function () {
+    describe("filter", () => {
 
-        it("should callback on matched items", function () {
+        it("should callback on matched items", () => {
 
             query.run({
-                "first": {
-                    "value": "text"
+                first: {
+                    value: "text"
                 },
-                "second": {
-                    "value": "last"
+                second: {
+                    value: "last"
                 }
             }, "/*?value:last", cbMock);
 
@@ -132,14 +129,14 @@ describe("query", function () {
             expect(cbMock.args[0][3]).to.eq("#/second");
         });
 
-        it("should continue after query", function () {
+        it("should continue after query", () => {
 
             query.run({
-                "first": {
-                    "value": "text"
+                first: {
+                    value: "text"
                 },
-                "second": {
-                    "value": "last"
+                second: {
+                    value: "last"
                 }
             }, "/*?value:last/value", cbMock);
 
@@ -151,19 +148,19 @@ describe("query", function () {
     });
 
 
-    describe("**", function () {
+    describe("**", () => {
 
-        it("should callback on all keys", function () {
+        it("should callback on all keys", () => {
 
             query.run({
                 "1": {
-                    "value": "2",
+                    value: "2",
                     "3": {
-                        "value": "4"
+                        value: "4"
                     }
                 },
                 "5": {
-                    "value": "6"
+                    value: "6"
                 }
 
             }, "/**/*", cbMock);
@@ -173,17 +170,17 @@ describe("query", function () {
             expect(cbMock.args[5][3]).to.eq("#/5/value");
         });
 
-        it("should callback on all keys, even without /*", function () {
+        it("should callback on all keys, even without /*", () => {
 
             query.run({
                 "1": {
-                    "value": "2",
+                    value: "2",
                     "3": {
-                        "value": "4"
+                        value: "4"
                     }
                 },
                 "5": {
-                    "value": "6"
+                    value: "6"
                 }
 
             }, "/**", cbMock);
@@ -193,17 +190,17 @@ describe("query", function () {
             expect(cbMock.args[5][3]).to.eq("#/5/value");
         });
 
-        it("should callback on all matched keys", function () {
+        it("should callback on all matched keys", () => {
 
             query.run({
-                "first": {
-                    "value": "text",
-                    "inner": {
-                        "value": ""
+                first: {
+                    value: "text",
+                    inner: {
+                        value: ""
                     }
                 },
-                "second": {
-                    "value": "last"
+                second: {
+                    value: "last"
                 }
 
             }, "/**?value:!undefined", cbMock);
@@ -213,26 +210,26 @@ describe("query", function () {
             expect(cbMock.args[2][0]).to.a.string;
         });
 
-        it("should continue on matched globs", function () {
+        it("should continue on matched globs", () => {
 
             query.run({
-                "a": {
-                    "id": "a",
-                    "needle": "needle",
+                a: {
+                    id: "a",
+                    needle: "needle"
                 },
-                "b": {
-                    "id": "b",
-                    "needle": "needle",
-                    "d": {
-                        "id": "d",
-                        "needle": "needle"
+                b: {
+                    id: "b",
+                    needle: "needle",
+                    d: {
+                        id: "d",
+                        needle: "needle"
                     }
                 },
-                "c": {
-                    "e": {
-                        "f": {
-                            "id": "f",
-                            "needle": "needle"
+                c: {
+                    e: {
+                        f: {
+                            id: "f",
+                            needle: "needle"
                         }
                     }
                 }
@@ -244,15 +241,15 @@ describe("query", function () {
         });
     });
 
-    describe("regex", function () {
+    describe("regex", () => {
 
-        it("should apply {...} as regex on property names", function () {
+        it("should apply {...} as regex on property names", () => {
 
             query.run({
-                "a1": true,
-                "b1": false,
-                "a2": true,
-                "b2": false,
+                a1: true,
+                b1: false,
+                a2: true,
+                b2: false
             }, "#/{a.*}", cbMock);
 
             expect(cbMock.called).to.be.true;

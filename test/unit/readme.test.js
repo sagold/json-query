@@ -1,20 +1,17 @@
-"use strict";
+const { expect } = require("chai");
+const q = require("../../lib");
 
 
-var expect = require("chai").expect;
-var q = require("../../lib");
+describe("query", () => {
 
-
-describe("query", function () {
-
-    describe("readme-examples", function () {
+    describe("readme-examples", () => {
 
         var cbMock;
 
-        beforeEach(function () {
+        beforeEach(() => {
 
-            cbMock = function cbMock() {
-                cbMock.args.push(arguments);
+            cbMock = (...args) => {
+                cbMock.args.push(args);
                 cbMock.called = true;
             };
 
@@ -22,13 +19,13 @@ describe("query", function () {
             cbMock.args = [];
         });
 
-        it("should callback on 'child' ids", function () {
+        it("should callback on 'child' ids", () => {
             var data = {
-                "parent": {
-                    "child": {"id": "child-1"}
+                parent: {
+                    child: { id: "child-1" }
                 },
-                "neighbour": {
-                    "child": {"id": "child-2"}
+                neighbour: {
+                    child: { id: "child-2" }
                 }
             };
 
@@ -40,13 +37,13 @@ describe("query", function () {
             expect(cbMock.args[1][0]).to.eq("child-2");
         });
 
-        it("should callback on each objects id property", function () {
+        it("should callback on each objects id property", () => {
             var data = {
-                "parent": {
-                    "child": {"id": "child-1"}
+                parent: {
+                    child: { id: "child-1" }
                 },
-                "neighbour": {
-                    "child": {"id": "child-2"}
+                neighbour: {
+                    child: { id: "child-2" }
                 }
             };
 
@@ -58,15 +55,15 @@ describe("query", function () {
             expect(cbMock.args[1][0]).to.eq("child-2");
         });
 
-        it("should callback on valid elements only", function () {
+        it("should callback on valid elements only", () => {
             var data = {
-                "parent": {
-                    "valid": true,
-                    "child": {"id": "child-1"}
+                parent: {
+                    valid: true,
+                    child: { id: "child-1" }
                 },
-                "neighbour": {
-                    "valid": false,
-                    "child": {"id": "child-2"}
+                neighbour: {
+                    valid: false,
+                    child: { id: "child-2" }
                 }
             };
 
@@ -76,11 +73,11 @@ describe("query", function () {
             expect(cbMock.args[0][0]).to.eq(data.parent.child);
         });
 
-        it("should callback on regex and filters combined", function () {
+        it("should callback on regex and filters combined", () => {
             var data = {
-                "albert": {valid: true},
-                "alfred": {valid: false},
-                "alfons": {valid: true}
+                albert: { valid: true },
+                alfred: { valid: false },
+                alfons: { valid: true }
             };
 
             q.run(data, "#/{al[^b]}?valid:true", cbMock);
