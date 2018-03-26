@@ -105,6 +105,31 @@ describe("filter", () => {
         expect(result.length).to.eq(2);
     });
 
+    describe("undefined", () => {
+
+        it("should not match undefined properties for a negated value", () => {
+            var result = filter.values({
+                a: {},
+                b: { type: false },
+                c: { type: true }
+            }, "*?type:!true");
+
+            expect(result.length).to.eq(1);
+            expect(result[0]).to.deep.equal({ type: false });
+        });
+
+        it("should match undefined properties if explicitly stated", () => {
+            var result = filter.values({
+                a: {},
+                b: { type: false },
+                c: { type: true }
+            }, "*?type:!true||type:undefined");
+
+            expect(result.length).to.eq(2);
+            expect(result[0]).to.deep.equal({}, { type: false });
+        });
+    });
+
     describe("on array", () => {
 
         it("should query * in array", () => {
