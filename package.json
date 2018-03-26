@@ -10,6 +10,7 @@
   "scripts": {
     "test": "mocha --recursive 'test/unit/*.test.js' -R spec; exit 0",
     "tdd": "watch 'npm run test' lib/ app/ test/; exit 0",
+    "lint": "eslint lib",
     "debug": "devtool node_modules/mocha/bin/_mocha -qc -- --recursive test/unit/*.test.js"
   },
   "dependencies": {
