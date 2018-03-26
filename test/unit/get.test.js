@@ -48,6 +48,13 @@ describe("queryGet", () => {
         expect(result).to.contain("#/a", "#/b", "#/b/d", "#/c/e/f");
     });
 
+    it("should return all queried values in array", () => {
+        let result = queryGet(data, "#/**/*/id", queryGet.VALUE);
+
+        expect(result).to.have.length(4);
+        expect(result).to.contain("a", "b", "d", "f");
+    });
+
     it("should return an object that maps pointers to their respective value", () => {
         let result = queryGet(data, "#/**/*?needle:needle", queryGet.MAP);
 

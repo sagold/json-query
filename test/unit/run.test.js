@@ -30,6 +30,19 @@ describe("query", () => {
         expect(cbMock.args[0][0].value).to.eq("text");
     });
 
+    it("should ignore trailing slashes", () => {
+
+        query.run({
+            first: {
+                value: "text"
+            }
+        }, "/first/", cbMock);
+
+        expect(cbMock.called).to.be.true;
+        expect(cbMock.args.length).to.eq(1);
+        expect(cbMock.args[0][0].value).to.eq("text");
+    });
+
     it("should callback with value, key, object and pointer", () => {
 
         query.run({
