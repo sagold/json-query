@@ -12,6 +12,8 @@ and get it like
 
 `const query = require("gson-query");`
 
+The command-line integration can be installed separately by [gson-query-cli](https://github.com/sagold/gson-query-cli)
+
 
 - [Introduction](#quick-introduction)
 - [API](#api)
