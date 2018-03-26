@@ -28,7 +28,7 @@ The command-line integration can be installed separately by [gson-query-cli](htt
 
 ## Breaking Changes
 
-- with `v2.0.0` a negated filter (lookahead), e.g. `*?valid:!true` will not return objects where `valid === undefined`. To match object with missing properties you can still query them explicitly with `*?valid:!true||valid:undefined`
+- with `v2.0.0` a negated filter (lookahead), e.g. `*?valid:!true` will not return objects where `valid === undefined`. To match objects with missing properties you can still query them explicitly with `*?valid:!true||valid:undefined`
 
 
 ## Quick introduction
