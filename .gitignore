@@ -4,3 +4,4 @@ build
 bower_components
 *.sublime-workspace
 *.sublime-project
+/.nyc_output
