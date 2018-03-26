@@ -1,4 +1,4 @@
-<h1 align="center"><img src="./docs/gson-query.png" width:"228" alt="gson-query"></h1>
+<h1 align="center"><img src="./docs/gson-query.png" width="228" alt="gson-query"></h1>
 
 **Query and transform your json data using an extended glob-pattern within browsers or nodejs**
 
