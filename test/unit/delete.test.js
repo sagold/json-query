@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const query = require("../../lib");
 
 
-describe("queryGet", () => {
+describe("query.delete", () => {
 
     let data;
 
@@ -50,6 +50,8 @@ describe("queryGet", () => {
 
     it("should also remove array indices", () => {
         let result = query.delete({ array: [1, { remove: true }, { remove: true }, 2] }, "#/array/*?remove:true");
+
+        console.log("result", result);
 
         expect(result.array).to.have.length(2);
         expect(result.array).to.deep.equal([1, 2]);

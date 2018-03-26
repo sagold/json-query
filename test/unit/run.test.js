@@ -1,8 +1,9 @@
+/* eslint object-property-newline: 0 */
 const { expect } = require("chai");
 const query = require("../../lib");
 
 
-describe("query", () => {
+describe("query.run", () => {
 
     var cbMock;
 
@@ -140,6 +141,20 @@ describe("query", () => {
             expect(cbMock.args.length).to.eq(1);
             expect(cbMock.args[0][0].value).to.eq("last");
             expect(cbMock.args[0][3]).to.eq("#/second");
+        });
+
+        // @note bug through gson-pointer upgrade to v3.x.
+        // now, only strings are valid as a pointer or else they are ignored
+        it("should return arrays' objects using look ahead", () => {
+            let calls = [];
+            query.run({ list: [1, { remove: true }, { remove: true }, 2] }, "#/list/*?remove:true",
+                (value, key, object, pointer) => calls.push({ value, pointer })
+            );
+
+            expect(calls).to.have.length(2);
+            expect(calls[0].value).to.deep.eq({ remove: true });
+            expect(calls[0].pointer).to.eq("#/list/1");
+            expect(calls[1].pointer).to.eq("#/list/2");
         });
 
         it("should continue after query", () => {

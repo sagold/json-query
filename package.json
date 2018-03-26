@@ -15,8 +15,8 @@
     "debug": "devtool node_modules/mocha/bin/_mocha -qc -- --recursive test/unit/*.test.js"
   },
   "dependencies": {
-    "gson-conform": "^1.0.2",
-    "gson-pointer": "^1.0.3"
+    "gson-conform": "^1.0.3",
+    "gson-pointer": "^3.4.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
