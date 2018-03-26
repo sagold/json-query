@@ -1,6 +1,8 @@
 /test/
 /build/
 /release/
+/docs/
+/test/
 
 bower.json
 Gruntfile.js
