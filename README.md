@@ -1,5 +1,7 @@
 # gson query
 
+**Query and transform your json data using an extended glob-pattern within browsers or nodejs**
+
 > Query and transform your json data using an extended glob-pattern. This is a really helpful tool to quickly
 >
 > - fuzzy search json-data matching some search properties
