@@ -99,6 +99,19 @@ describe("filter", () => {
         expect(result[0]).to.eq(obj.first);
     });
 
+    it("should match regex on property names, containing ?", () => {
+        var result = filter.values(obj, "{f?irst}");
+
+        expect(result.length).to.eq(1);
+        expect(result[0]).to.eq(obj.first);
+    });
+
+    it("should match regex on property names, with a present query", () => {
+        var result = filter.values(obj, "{ird?}?type:true");
+        expect(result.length).to.eq(1);
+        expect(result[0]).to.eq(obj.first);
+    });
+
     it("should match all defined properties", () => {
         var result = filter.values(obj, "*?type");
 
