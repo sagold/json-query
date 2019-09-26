@@ -166,7 +166,7 @@ describe("query.run", () => {
         // @note bug through gson-pointer upgrade to v3.x.
         // now, only strings are valid as a pointer or else they are ignored
         it("should return arrays' objects using look ahead", () => {
-            let calls = [];
+            const calls = [];
             query.run({ list: [1, { remove: true }, { remove: true }, 2] }, "#/list/*?remove:true",
                 (value, key, object, pointer) => calls.push({ value, pointer })
             );

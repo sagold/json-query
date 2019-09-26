@@ -9,6 +9,8 @@
         "sourceType": "module"
     },
     "rules": {
-        "semi": ["error", "always"]
+        "semi": ["error", "always"],
+        "prefer-const": "error",
+        "no-var": "error"
     }
 }

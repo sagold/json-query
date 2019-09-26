@@ -32,7 +32,7 @@ describe("query.delete", () => {
     });
 
     it("should delete any matches", () => {
-        let result = query.delete(data, "#/**/*/needle");
+        const result = query.delete(data, "#/**/*/needle");
 
         expect(result.a.needle).to.be.undefined;
         expect(result.b.needle).to.be.undefined;
@@ -41,7 +41,7 @@ describe("query.delete", () => {
     });
 
     it("should delete any matches supporting filters", () => {
-        let result = query.delete(data, "#/**/*?needle:needle");
+        const result = query.delete(data, "#/**/*?needle:needle");
 
         expect(result.a).to.be.undefined;
         expect(result.b).to.be.undefined;
@@ -49,7 +49,7 @@ describe("query.delete", () => {
     });
 
     it("should also remove array indices", () => {
-        let result = query.delete({ array: [1, { remove: true }, { remove: true }, 2] }, "#/array/*?remove:true");
+        const result = query.delete({ array: [1, { remove: true }, { remove: true }, 2] }, "#/array/*?remove:true");
 
         expect(result.array).to.have.length(2);
         expect(result.array).to.deep.equal([1, 2]);

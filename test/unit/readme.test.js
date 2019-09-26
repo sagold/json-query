@@ -6,7 +6,7 @@ describe("query", () => {
 
     describe("readme-examples", () => {
 
-        var cbMock;
+        let cbMock;
 
         beforeEach(() => {
 
@@ -20,7 +20,7 @@ describe("query", () => {
         });
 
         it("should callback on 'child' ids", () => {
-            var data = {
+            const data = {
                 parent: {
                     child: { id: "child-1" }
                 },
@@ -38,7 +38,7 @@ describe("query", () => {
         });
 
         it("should callback on each objects id property", () => {
-            var data = {
+            const data = {
                 parent: {
                     child: { id: "child-1" }
                 },
@@ -56,7 +56,7 @@ describe("query", () => {
         });
 
         it("should callback on valid elements only", () => {
-            var data = {
+            const data = {
                 parent: {
                     valid: true,
                     child: { id: "child-1" }
@@ -74,7 +74,7 @@ describe("query", () => {
         });
 
         it("should callback on regex and filters combined", () => {
-            var data = {
+            const data = {
                 albert: { valid: true },
                 alfred: { valid: false },
                 alfons: { valid: true }
