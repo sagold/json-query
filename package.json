@@ -8,8 +8,8 @@
     "url": "https://github.com/sagold/gson-query.git"
   },
   "scripts": {
-    "test": "mocha --recursive 'test/unit/*.test.js' -R spec; exit 0",
-    "tdd": "watch 'npm run test' lib/ app/ test/; exit 0",
+    "test": "mocha --recursive 'test/unit/**/*.test.js' -R spec; exit 0",
+    "tdd": "watch 'npm run test' lib/ test/; exit 0",
     "lint": "eslint lib test",
     "coverage": "nyc npm run test --reporter=lcov",
     "debug": "devtool node_modules/mocha/bin/_mocha -qc -- --recursive test/unit/*.test.js"
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint": "^4.19.1",
+    "eslint": "^6.x",
     "mocha": "^3.1.2",
     "nyc": "^11.6.0",
     "watch": "^1.0.1"

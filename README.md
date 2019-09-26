@@ -24,7 +24,8 @@ The command-line integration can be installed separately by [gson-query-cli](htt
   - [query.run](#query.run)
   - [query.get](#query.get)
   - [query.delete](#query.delete)
-
+  - [query.pattern](#query.pattern)
+- [Further examples](#further-examples)
 
 ## Breaking Changes
 
@@ -68,6 +69,18 @@ or quickly **delete** properties from your data
 ```js
 query.delete(data, "/server/*/services/{szm-.*}");
 ```
+
+Use **patterns** to query patterns recursively
+
+```js
+query.pattern(data, "/node(/nodes/*)+/value");
+```
+
+and to select multiple properties of an object or array:
+```js
+query.pattern(data, "/server((/store), (/{front-.*}))/services/*");
+```
+
 
 
 ## API
@@ -288,8 +301,80 @@ query.delete(data, "#/**/*/data");
 ```
 
 
+### query.pattern
+
+The pattern-queries behave as the default `query.get` methods:
+
+```js
+import query from "gson-query";
+
+// predefined callback
+const targets = query.pattern(data, "#/*(/node/*?valid)+/valid", query.get.POINTER); // return pointers
+const values = query.pattern(data, "#/*(/node/*?valid)+/valid", query.get.VALUES); // return values
+// ...
+// custom callback
+query.pattern(data, "#/*(/node/*?valid)+/valid", (value, key, parent, jsonPointer) => {});
+```
+
+Pattern-queries enable selection of recursive patterns and offer a way to build up a collection of data for further filterung. A pattern uses brackets `()` to identify repeatable structures and offers multiple selections for the same data-entry.
+
+Using a pattern-query like `#/tree((/left),(/right))*` will recursively select all *left* and *right*-nodes. e.g.
+
+```js
+const data = {
+  tree: {
+    left: {
+      id: "1",
+      left: { id: "2" },
+      right: { id: "3" }
+    },
+    right: {
+      id: "4"
+    }
+  }
+};
+
+const result = query.pattern(data, "#/tree((/left),(/right))*/id");
+// ["1", "2", "3", "4"]
+```
+
+**Note** that each pattern-queries are resovled using `query.get` and thus support all mentioned features.
+
+One use-case for pattern-queries can be found in json-schema specification. Any definition in `#/defs` may reference itself or be referenced circular. A linear query cannot describe the corresponding data, but pattern-queries might be sufficient.
+
+
+#### details
+
+A pattern is a simple group defined by brackets: `#/a(/b)/c`, which is identical to `#/a/b/c`. But a group may also have a quantifier `+`: `#/a(/b)+/c`. Using a quantifier, the query within the pattern will be applied as long as it matches any data. Its combined result will then be passed to `/c`.
+
+e.g. applying the pattern `#/a(/b)+/c` on the following input data:
+
+```js
+const input = {
+  a: {
+    b: {
+      c: "1",
+      b: {
+        c: "2",
+        b: {}
+      }
+    }
+  }
+};
+```
+
+will first select property `a` and then repeatedly select property `b`: `[a/b, a/b/b, a/b/b/b]`. This result is filtered by `c`, which will return `["1", "2"]` (the last `b`-object has no property `c`).
+
+Patterns can also be used for **OR**-operations. An *OR* is identified by a semicolon `,` and must be within and between patterns, like `((/a/b),(/c))`. **Not valid** patterns are *(/a/b, /c)* and *r/(/a/b),(/c)/f*.
+
+Currently, using **OR** is *commutative* in a sense that `((/a),(/b)) = ((/b),(/a))`, (with a different ordering of the resulting set), *distributive* so that `/a((/b), (/c)) = ((/a/b), (/a/c))`. **Parenthesis** without a quantifier are *associative*, e.g. `#/a/b/c = #/a(/b)/c = #/a(/b/c) = #/a(/b)(/c)`. Thus, a pattern `((/b)(/c))+` can also be written like `(/b/c)+`.
+
+
+## further examples
+
 for further examples refer to the unit tests
 
 - [query.delete](https://github.com/sagold/json-query/blob/master/test/unit/queryDelete.test.js)
 - [query.get](https://github.com/sagold/json-query/blob/master/test/unit/queryGet.test.js)
 - [query.query](https://github.com/sagold/json-query/blob/master/test/unit/query.test.js)
+- [query.pattern](https://github.com/sagold/json-query/blob/master/test/unit/pattern.test.js)
