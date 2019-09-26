@@ -21,10 +21,10 @@ The command-line integration can be installed separately by [gson-query-cli](htt
 - [API](#api)
   - [query](#query)
   - [callback](#callback)
-  - [query.run](#query.run)
-  - [query.get](#query.get)
-  - [query.delete](#query.delete)
-  - [query.pattern](#query.pattern)
+  - [query.run](#queryrun)
+  - [query.get](#queryget)
+  - [query.delete](#querydelete)
+  - [query.pattern](#querypattern)
 - [Further examples](#further-examples)
 
 ## Breaking Changes
