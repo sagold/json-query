@@ -4,11 +4,9 @@ const query = require("../../lib");
 
 
 describe("query.run", () => {
-
-    var cbMock;
+    let cbMock;
 
     beforeEach(() => {
-
         cbMock = (...args) => {
             cbMock.args.push(args);
             cbMock.called = true;
@@ -19,7 +17,6 @@ describe("query.run", () => {
     });
 
     it("should callback for matched jsonpointer", () => {
-
         query.run({
             first: {
                 value: "text"
@@ -32,7 +29,6 @@ describe("query.run", () => {
     });
 
     it("should ignore trailing slashes", () => {
-
         query.run({
             first: {
                 value: "text"
@@ -44,8 +40,37 @@ describe("query.run", () => {
         expect(cbMock.args[0][0].value).to.eq("text");
     });
 
-    it("should callback with value, key, object and pointer", () => {
+    it("should callback root-object for root pointer", () => {
+        const data = { first: { value: "text" } };
+        query.run(data, "/", cbMock);
 
+        expect(cbMock.called).to.be.true;
+        expect(cbMock.args.length).to.eq(1);
+        expect(cbMock.args[0][0]).to.eq(data);
+        expect(cbMock.args[0][3]).to.eq("#");
+    });
+
+    it("should callback root-object for root uri-pointer", () => {
+        const data = { first: { value: "text" } };
+        query.run(data, "#", cbMock);
+
+        expect(cbMock.called).to.be.true;
+        expect(cbMock.args.length).to.eq(1);
+        expect(cbMock.args[0][0]).to.eq(data);
+        expect(cbMock.args[0][3]).to.eq("#");
+    });
+
+    it("should callback root-object for root uri-pointer with trailing slash", () => {
+        const data = { first: { value: "text" } };
+        query.run(data, "#/", cbMock);
+
+        expect(cbMock.called).to.be.true;
+        expect(cbMock.args.length).to.eq(1);
+        expect(cbMock.args[0][0]).to.eq(data);
+        expect(cbMock.args[0][3]).to.eq("#");
+    });
+
+    it("should callback with value, key, object and pointer", () => {
         query.run({
             first: {
                 value: "text"
@@ -59,7 +84,6 @@ describe("query.run", () => {
     });
 
     it("should callback on nested objects", () => {
-
         query.run({
             first: {
                 value: "text"
@@ -72,7 +96,6 @@ describe("query.run", () => {
     });
 
     it("should callback only if match", () => {
-
         query.run({
             first: {
                 value: "text"
@@ -87,7 +110,6 @@ describe("query.run", () => {
     describe("*", () => {
 
         it("should callback on all items", () => {
-
             query.run({
                 first: {
                     value: "text"
@@ -102,7 +124,6 @@ describe("query.run", () => {
         });
 
         it("should continue for all found items", () => {
-
             query.run({
                 first: {
                     value: "first"
@@ -127,7 +148,6 @@ describe("query.run", () => {
     describe("filter", () => {
 
         it("should callback on matched items", () => {
-
             query.run({
                 first: {
                     value: "text"
@@ -158,7 +178,6 @@ describe("query.run", () => {
         });
 
         it("should continue after query", () => {
-
             query.run({
                 first: {
                     value: "text"
@@ -179,7 +198,6 @@ describe("query.run", () => {
     describe("**", () => {
 
         it("should callback on all keys", () => {
-
             query.run({
                 "1": {
                     value: "2",
@@ -199,7 +217,6 @@ describe("query.run", () => {
         });
 
         it("should callback on all keys, even without /*", () => {
-
             query.run({
                 "1": {
                     value: "2",
@@ -219,7 +236,6 @@ describe("query.run", () => {
         });
 
         it("should callback on all matched keys", () => {
-
             query.run({
                 first: {
                     value: "text",
@@ -239,7 +255,6 @@ describe("query.run", () => {
         });
 
         it("should continue on matched globs", () => {
-
             query.run({
                 a: {
                     id: "a",
@@ -272,7 +287,6 @@ describe("query.run", () => {
     describe("regex", () => {
 
         it("should apply {...} as regex on property names", () => {
-
             query.run({
                 a1: true,
                 b1: false,

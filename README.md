@@ -29,8 +29,10 @@ The command-line integration can be installed separately by [gson-query-cli](htt
 
 ## Breaking Changes
 
+- with version `v3.0.0` (2019/09/26)
+    - the syntax has changed to es6, which might require code transpilation
+    - queries for root-pointer (`#`, `#/`, `/`) no callback root object with `(rootObject, null, null, "#")`
 - with `v2.0.0` a negated filter (lookahead), e.g. `*?valid:!true` will not return objects where `valid === undefined`. To match objects with missing properties you can still query them explicitly with `*?valid:!true||valid:undefined`
-
 
 ## Quick introduction
 
