@@ -118,6 +118,14 @@ describe("filter", () => {
         expect(result.length).to.eq(2);
     });
 
+    it("should treat numbers as strings", () => {
+        const result = filter.values({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
+
+        expect(result.length).to.eq(2);
+        expect(result).to.deep.equal([{ id: 1 }, { id: "1" }]);
+    });
+
+
     describe("undefined", () => {
 
         it("should not match undefined properties for a negated value", () => {
