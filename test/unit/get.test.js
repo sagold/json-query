@@ -1,8 +1,8 @@
 const { expect } = require("chai");
-const query = require("../../lib");
+const get = require("../../lib/get");
 
 
-describe("query.get", () => {
+describe("get", () => {
 
     const data = {
         a: {
@@ -28,35 +28,35 @@ describe("query.get", () => {
     };
 
     it("should return empty array", () => {
-        const result = query.get({}, "#/**/*?needle:needle");
+        const result = get({}, "#/**/*?needle:needle");
 
         expect(result).to.be.an("array");
         expect(result).to.have.length(0);
     });
 
     it("should return all queried values per default", () => {
-        const result = query.get(data, "#/**/*?needle:needle");
+        const result = get(data, "#/**/*?needle:needle");
 
         expect(result).to.have.length(4);
         expect(result).to.contain(data.a, data.b, data.b.d, data.c.e.f);
     });
 
     it("should return all queried pointers in array", () => {
-        const result = query.get(data, "#/**/*?needle:needle", query.get.POINTER);
+        const result = get(data, "#/**/*?needle:needle", get.POINTER);
 
         expect(result).to.have.length(4);
         expect(result).to.contain("#/a", "#/b", "#/b/d", "#/c/e/f");
     });
 
     it("should return all ids", () => {
-        const result = query.get(data, "#/**/*/id", query.get.VALUE);
+        const result = get(data, "#/**/*/id", get.VALUE);
 
         expect(result).to.have.length(4);
         expect(result).to.contain("a", "b", "d", "f");
     });
 
     it("should return an object that maps pointers to their respective value", () => {
-        const result = query.get(data, "#/**/*?needle:needle", query.get.MAP);
+        const result = get(data, "#/**/*?needle:needle", get.MAP);
 
         expect(result).to.be.an("object");
         expect(result).to.deep.equal({
@@ -68,7 +68,7 @@ describe("query.get", () => {
     });
 
     it("should return custom functions return values", () => {
-        const result = query.get(data, "#/**/*?needle:needle", function cb(val, key, parent, pointer) {
+        const result = get(data, "#/**/*?needle:needle", function cb(val, key, parent, pointer) {
             return `custom-${pointer}`;
         });
 

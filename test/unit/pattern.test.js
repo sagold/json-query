@@ -1,7 +1,7 @@
 /* eslint object-property-newline: 0 */
 const { expect } = require("chai");
 // const pattern = require("../../lib/pattern");
-const run = require("../../lib/v2/run");
+const run = require("../../lib/get");
 const pattern = (data, pointer, cb) => run(data, pointer, cb);
 
 

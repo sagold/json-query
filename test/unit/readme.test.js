@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const q = require("../../lib");
+const get = require("../../lib/get");
 
 
 describe("query", () => {
@@ -29,7 +29,7 @@ describe("query", () => {
                 }
             };
 
-            q.run(data, "#/*/child/id", cbMock);
+            get(data, "#/*/child/id", cbMock);
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(2);
@@ -47,7 +47,7 @@ describe("query", () => {
                 }
             };
 
-            q.run(data, "#/**/id", cbMock);
+            get(data, "#/**/id", cbMock);
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(2);
@@ -67,7 +67,7 @@ describe("query", () => {
                 }
             };
 
-            q.run(data, "#/**?valid:true/child", cbMock);
+            get(data, "#/**?valid:true/child", cbMock);
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(1);
             expect(cbMock.args[0][0]).to.eq(data.parent.child);
@@ -80,7 +80,7 @@ describe("query", () => {
                 alfons: { valid: true }
             };
 
-            q.run(data, "#/{al[^b]}?valid:true", cbMock);
+            get(data, "#/{al[^b]}?valid:true", cbMock);
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(1);

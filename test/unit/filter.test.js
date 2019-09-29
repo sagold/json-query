@@ -2,7 +2,7 @@
 const { expect } = require("chai");
 // const query = require("../../lib");
 // const { filter } = query;
-const run = require("../../lib/v2/run");
+const run = require("../../lib/get");
 const filter = { values: (data, query) => run(data, query) };
 
 

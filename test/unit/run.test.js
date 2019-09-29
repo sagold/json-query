@@ -1,7 +1,7 @@
 /* eslint object-property-newline: 0 */
 const { expect } = require("chai");
 // const query = require("../../lib");
-const run = require("../../lib/v2/run");
+const run = require("../../lib/get");
 const query = { run };
 
 
