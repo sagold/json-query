@@ -5,7 +5,7 @@ const run = require("../../lib/v2/run");
 const query = { run };
 
 
-describe.only("query.run", () => {
+describe("query.run", () => {
     let cbMock;
 
     beforeEach(() => {
@@ -194,6 +194,14 @@ describe.only("query.run", () => {
             expect(cbMock.args[0][0]).to.eq("last");
             expect(cbMock.args[0][3]).to.eq("#/second/value");
         });
+
+        it("should filter numbers", () => {
+            let result = query.run({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
+            result = result.map(r => r[0]);
+
+            expect(result.length).to.eq(2);
+            expect(result).to.deep.equal([{ id: 1 }, { id: "1" }]);
+        });
     });
 
 
@@ -239,7 +247,7 @@ describe.only("query.run", () => {
         });
 
         it("should callback on all matched keys", () => {
-            query.run({
+            const res = query.run({
                 first: {
                     value: "text",
                     inner: {
