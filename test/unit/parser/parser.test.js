@@ -1,8 +1,15 @@
 const { expect } = require("chai");
+const { join } = require("gson-pointer");
 const { parse } = require("../../../lib/parser");
 
 
-describe.only("parser", () => {
+const valid = /(children|text|type|start|end|rest|errors|fullText|\d+)/;
+const subset = /(children|text|type|\d+)/;
+const toJSON = (ast) => JSON.stringify(ast, (key, value) => (key === "" || valid.test(key)) ? value : undefined, 2);
+const toSmallJSON = (ast) => JSON.stringify(ast, (key, value) => (key === "" || (key === "rest" && value !== "") || subset.test(key)) ? value : undefined, 2);
+
+
+describe("parser", () => {
     it("should support uri-fragment", () => {
         const r = parse("#");
         expect(r).not.to.eq(null);
