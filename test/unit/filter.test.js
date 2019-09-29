@@ -1,9 +1,6 @@
 /* eslint object-property-newline: 0 */
 const { expect } = require("chai");
-// const query = require("../../lib");
-// const { filter } = query;
-const run = require("../../lib/get");
-const filter = { values: (data, query) => run(data, query) };
+const get = require("../../lib/get");
 
 
 describe("filter", () => {
@@ -38,91 +35,91 @@ describe("filter", () => {
     });
 
     it("should return all direct elements", () => {
-        const result = filter.values(obj, "*");
+        const result = get(obj, "*");
 
         expect(result.length).to.eq(4);
     });
 
     // changed and runs on all data
     it.skip("should return all elements", () => {
-        const result = filter.values(obj, "**");
+        const result = get(obj, "**");
 
         expect(result.length).to.eq(4);
     });
 
     it("should return selected element", () => {
-        const result = filter.values(obj, "first");
+        const result = get(obj, "first");
 
         expect(result.length).to.eq(1);
         expect(result[0]).to.eq(obj.first);
     });
 
     it("should return all matched elements", () => {
-        const result = filter.values(obj, "*?type:true");
+        const result = get(obj, "*?type:true");
 
         expect(result.length).to.eq(2);
         expect(result[1]).to.eq(obj.second);
     });
 
     it("should return object as array", () => {
-        const result = filter.values(obj, "first?type:true");
+        const result = get(obj, "first?type:true");
 
         expect(result.length).to.eq(1);
         expect(result[0]).to.eq(obj.first);
     });
 
     it("should return empty array if nothing found", () => {
-        const result = filter.values(obj, "*?type:false");
+        const result = get(obj, "*?type:false");
 
         expect(result.length).to.eq(0);
     });
 
     it("should return empty array if no selector", () => {
-        const result = filter.values(obj);
+        const result = get(obj);
 
         expect(result.length).to.eq(0);
     });
 
     it("should return empty array if object invalid", () => {
-        const result = filter.values(null, "first?type:false");
+        const result = get(null, "first?type:false");
 
         expect(result.length).to.eq(0);
     });
 
     it("should return empty array if property not found", () => {
-        const result = filter.values(obj, "first?type:false");
+        const result = get(obj, "first?type:false");
 
         expect(result.length).to.eq(0);
     });
 
     it("should match regex on property names", () => {
-        const result = filter.values(obj, "{ir.*}?type:true");
+        const result = get(obj, "{ir.*}?type:true");
 
         expect(result.length).to.eq(1);
         expect(result[0]).to.eq(obj.first);
     });
 
     it("should match regex on property names, containing ?", () => {
-        const result = filter.values(obj, "{f?irst}");
+        const result = get(obj, "{f?irst}");
 
         expect(result.length).to.eq(1);
         expect(result[0]).to.eq(obj.first);
     });
 
     it("should match regex on property names, with a present query", () => {
-        const result = filter.values(obj, "{ird?}?type:true");
+        const result = get(obj, "{ird?}?type:true");
         expect(result.length).to.eq(1);
         expect(result[0]).to.eq(obj.first);
     });
 
     it("should match all defined properties", () => {
-        const result = filter.values(obj, "*?type");
+        const result = get(obj, "*?type");
 
         expect(result.length).to.eq(2);
     });
 
     it("should treat numbers as strings", () => {
-        const result = filter.values({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
+        const result = get({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
 
         expect(result.length).to.eq(2);
         expect(result).to.deep.equal([{ id: 1 }, { id: "1" }]);
@@ -131,7 +128,7 @@ describe("filter", () => {
     describe.skip("or", () => {
 
         it("should return both filter targets", () => {
-            const result = filter.values(obj, "#/third/*?type:inThird||type:secondInThird");
+            const result = get(obj, "#/third/*?type:inThird||type:secondInThird");
 
             expect(result.length).to.eq(2);
             expect(result).to.deep.equal([
@@ -145,7 +142,7 @@ describe("filter", () => {
     describe("undefined", () => {
 
         it("should not match undefined properties for a negated value", () => {
-            const result = filter.values({
+            const result = get({
                 a: {},
                 b: { type: false },
                 c: { type: true }
@@ -156,7 +153,7 @@ describe("filter", () => {
         });
 
         it("should match undefined properties if explicitly stated", () => {
-            const result = filter.values({
+            const result = get({
                 a: {},
                 b: { type: false },
                 c: { type: true }
@@ -170,26 +167,26 @@ describe("filter", () => {
     describe("on array", () => {
 
         it("should query * in array", () => {
-            const result = filter.values(arr, "*?type:true");
+            const result = get(arr, "*?type:true");
 
             expect(result.length).to.eq(2);
         });
 
         it("should return empty array for input array", () => {
-            const result = filter.values(arr, "first?type:true");
+            const result = get(arr, "first?type:true");
 
             expect(result.length).to.eq(0);
         });
 
         it("should return index in array", () => {
-            const result = filter.values(arr, "1");
+            const result = get(arr, "1");
 
             expect(result.length).to.eq(1);
             expect(result[0]).to.eq(arr[1]);
         });
 
         it("should query index in array", () => {
-            const result = filter.values(arr, "1?type:true");
+            const result = get(arr, "1?type:true");
 
             expect(result.length).to.eq(1);
             expect(result[0].id).to.eq("second");

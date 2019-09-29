@@ -1,8 +1,6 @@
 /* eslint object-property-newline: 0 */
 const { expect } = require("chai");
-// const pattern = require("../../lib/pattern");
-const run = require("../../lib/get");
-const pattern = (data, pointer, cb) => run(data, pointer, cb);
+const get = require("../../lib/get");
 
 
 describe("pattern", () => {
@@ -34,34 +32,34 @@ describe("pattern", () => {
     });
 
     it("should return query", () => {
-        const result = pattern(data, "#/**/a?value:6");
+        const result = get(data, "#/**/a?value:6");
         expect(result).to.deep.equal([{ value: "6", b: { value: "7" }}]);
     });
 
 
     describe("associative", () => {
         it("should treat simple pattern as query", () => {
-            const result = pattern(data, "#/a/b(/a)");
+            const result = get(data, "#/a/b(/a)");
             expect(result).to.deep.equal([data.a.b.a]);
         });
 
         it("should treat multiple simple patterns as query", () => {
-            const result = pattern(data, "#/a(/b)(/a)");
+            const result = get(data, "#/a(/b)(/a)");
             expect(result).to.deep.equal([data.a.b.a]);
         });
 
         it("should treat pattern as query", () => {
-            const result = pattern(data, "#/a(/b/a)");
+            const result = get(data, "#/a(/b/a)");
             expect(result).to.deep.equal([data.a.b.a]);
         });
 
         it("should treat single pattern as query", () => {
-            const result = pattern(data, "(/a/b/a)");
+            const result = get(data, "(/a/b/a)");
             expect(result).to.deep.equal([data.a.b.a]);
         });
 
         it("should ignore embracing parenthesis with no quantifier", () => {
-            const result = pattern(data, "#/a((/b)(/a))");
+            const result = get(data, "#/a((/b)(/a))");
             expect(result).to.deep.equal([data.a.b.a]);
         });
     });
@@ -69,7 +67,7 @@ describe("pattern", () => {
 
     describe("quanitifer", () => {
         it("should return pattern recursively", () => {
-            const result = pattern(data, "(/a)+");
+            const result = get(data, "(/a)+");
 
             expect(result).to.deep.equal([
                 data.a,
@@ -80,7 +78,7 @@ describe("pattern", () => {
         });
 
         it("should return target of pattern repeatedly", () => {
-            const result = pattern(
+            const result = get(
                 { a: { b: { a: { b: { a: { } } } } } },
                 "(/a/b)+"
             );
@@ -95,7 +93,7 @@ describe("pattern", () => {
 
     describe("filter", () => {
         it("should filter results for queries outside patterns", () => {
-            const result = pattern(data, "(/a)+/value");
+            const result = get(data, "(/a)+/value");
 
             expect(result).to.deep.equal(["1", "2", "3", "4"]);
         });
@@ -104,7 +102,7 @@ describe("pattern", () => {
 
     describe("OR", () => {
         it("should select both patterns on same object", () => {
-            const result = pattern(
+            const result = get(
                 { root: { a: { id: 1 }, b: { id: 2} } },
                 "#/root((/a),(/b))"
             );
@@ -112,12 +110,12 @@ describe("pattern", () => {
         });
 
         it("should select both patterns ", () => {
-            const result = pattern({ a: { id: 1 }, b: { id: 2} }, "((/a),(/b))");
+            const result = get({ a: { id: 1 }, b: { id: 2} }, "((/a),(/b))");
             expect(result).to.deep.equal([{ id: 1 }, { id: 2 }]);
         });
 
         it("should select both patterns repeatedly ", () => {
-            const result = pattern(
+            const result = get(
                 { a: { id: 1, a: { id: 2 }, b: { id: 3} }, b: { id: 4, b: { id: 5 } } },
                 "((/a),(/b))+/id"
             );
@@ -125,7 +123,7 @@ describe("pattern", () => {
         });
 
         it("should select multiple patterns", () => {
-            const result = pattern({ a: 1, b: 2, c: 3, d: 4}, "((/a),(/b),(/c))");
+            const result = get({ a: 1, b: 2, c: 3, d: 4}, "((/a),(/b),(/c))");
             expect(result).to.deep.equal([1, 2, 3]);
         });
     });
@@ -134,8 +132,8 @@ describe("pattern", () => {
     describe("commutative", () => {
         it("should be independent of order", () => {
             const data = { a: 1, b: 2, c: 3, d: 4};
-            const r1 = pattern(data, "((/a),(/b),(/c))");
-            const r2 = pattern(data, "((/c),(/a),(/b))");
+            const r1 = get(data, "((/a),(/b),(/c))");
+            const r2 = get(data, "((/c),(/a),(/b))");
             expect(r1.sort()).to.deep.equal(r2.sort());
         });
     });
@@ -143,22 +141,22 @@ describe("pattern", () => {
 
     describe("formatting", () => {
         it.skip("should ignore first inner whitespace", () => {
-            const result = pattern(data, "#/a( /b/a)");
+            const result = get(data, "#/a( /b/a)");
             expect(result).to.deep.equal([data.a.b.a]);
         });
 
         it.skip("should ignore all whitespaces around parenthesis", () => {
-            const result = pattern(data, "#/a ( /b/a ) /b");
+            const result = get(data, "#/a ( /b/a ) /b");
             expect(result).to.deep.equal([data.a.b.a.b]);
         });
 
         it("should ignore whitespaces around or", () => {
-            const result = pattern({ a: { id: 1 }, b: { id: 2} }, "((/a) , (/b))");
+            const result = get({ a: { id: 1 }, b: { id: 2} }, "((/a) , (/b))");
             expect(result).to.deep.equal([{ id: 1 }, { id: 2 }]);
         });
 
         it.skip("should ignore whitespace around quantifier", () => {
-            const result = pattern(data, " (/a) + /value");
+            const result = get(data, " (/a) + /value");
 
             expect(result).to.deep.equal(["1", "2", "3", "4"]);
         });
@@ -169,22 +167,22 @@ describe("pattern", () => {
         const get = require("../../lib/get");
 
         it("should return values", () => {
-            const result = run(data, "(/a)+/value", get.VALUE);
+            const result = get(data, "(/a)+/value", get.VALUE);
             expect(result).to.deep.equal(["1", "2", "3", "4"]);
         });
 
         it("should return pointers", () => {
-            const result = run(data, "(/a)+/value", get.POINTER);
+            const result = get(data, "(/a)+/value", get.POINTER);
             expect(result).to.deep.equal(["#/a/value", "#/a/a/value", "#/a/a/a/value", "#/a/a/a/a/value"]);
         });
 
         it("should return pointers", () => {
-            const result = run(data, "(/a)+/value", get.POINTER);
+            const result = get(data, "(/a)+/value", get.POINTER);
             expect(result).to.deep.equal(["#/a/value", "#/a/a/value", "#/a/a/a/value", "#/a/a/a/a/value"]);
         });
 
         it("should return {pointer:value}", () => {
-            const result = run(data, "(/a)+/value", get.MAP);
+            const result = get(data, "(/a)+/value", get.MAP);
             expect(result).to.deep.equal({
                 "#/a/value": "1",
                 "#/a/a/value": "2",
@@ -195,7 +193,7 @@ describe("pattern", () => {
 
         it("should call callback-function", () => {
             const result = {};
-            run(data, "(/a)+/value", (key, value, parent, pointer) => {
+            get(data, "(/a)+/value", (key, value, parent, pointer) => {
                 result[pointer] = true;
             });
 

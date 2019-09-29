@@ -1,11 +1,9 @@
 /* eslint object-property-newline: 0 */
 const { expect } = require("chai");
-// const query = require("../../lib");
-const run = require("../../lib/get");
-const query = { run };
+const get = require("../../lib/get");
 
 
-describe("query.run", () => {
+describe("get", () => {
     let cbMock;
 
     beforeEach(() => {
@@ -19,7 +17,7 @@ describe("query.run", () => {
     });
 
     it("should callback for matched jsonpointer", () => {
-        query.run({
+        get({
             first: {
                 value: "text"
             }
@@ -31,7 +29,7 @@ describe("query.run", () => {
     });
 
     it("should ignore trailing slashes", () => {
-        query.run({
+        get({
             first: {
                 value: "text"
             }
@@ -44,7 +42,7 @@ describe("query.run", () => {
 
     it("should callback root-object for root pointer", () => {
         const data = { first: { value: "text" } };
-        query.run(data, "/", cbMock);
+        get(data, "/", cbMock);
 
         expect(cbMock.called).to.be.true;
         expect(cbMock.args.length).to.eq(1);
@@ -54,7 +52,7 @@ describe("query.run", () => {
 
     it("should callback root-object for root uri-pointer", () => {
         const data = { first: { value: "text" } };
-        query.run(data, "#", cbMock);
+        get(data, "#", cbMock);
 
         expect(cbMock.called).to.be.true;
         expect(cbMock.args.length).to.eq(1);
@@ -64,7 +62,7 @@ describe("query.run", () => {
 
     it("should callback root-object for root uri-pointer with trailing slash", () => {
         const data = { first: { value: "text" } };
-        query.run(data, "#/", cbMock);
+        get(data, "#/", cbMock);
 
         expect(cbMock.called).to.be.true;
         expect(cbMock.args.length).to.eq(1);
@@ -73,7 +71,7 @@ describe("query.run", () => {
     });
 
     it("should callback with value, key, object and pointer", () => {
-        query.run({
+        get({
             first: {
                 value: "text"
             }
@@ -86,7 +84,7 @@ describe("query.run", () => {
     });
 
     it("should callback on nested objects", () => {
-        query.run({
+        get({
             first: {
                 value: "text"
             }
@@ -98,7 +96,7 @@ describe("query.run", () => {
     });
 
     it("should callback only if match", () => {
-        query.run({
+        get({
             first: {
                 value: "text"
             }
@@ -112,7 +110,7 @@ describe("query.run", () => {
     describe("*", () => {
 
         it("should callback on all items", () => {
-            query.run({
+            get({
                 first: {
                     value: "text"
                 },
@@ -126,7 +124,7 @@ describe("query.run", () => {
         });
 
         it("should continue for all found items", () => {
-            query.run({
+            get({
                 first: {
                     value: "first"
                 },
@@ -150,7 +148,7 @@ describe("query.run", () => {
     describe("filter", () => {
 
         it("should callback on matched items", () => {
-            query.run({
+            get({
                 first: {
                     value: "text"
                 },
@@ -169,7 +167,7 @@ describe("query.run", () => {
         // now, only strings are valid as a pointer or else they are ignored
         it("should return arrays' objects using look ahead", () => {
             const calls = [];
-            query.run({ list: [1, { remove: true }, { remove: true }, 2] }, "#/list/*?remove:true",
+            get({ list: [1, { remove: true }, { remove: true }, 2] }, "#/list/*?remove:true",
                 (value, key, object, pointer) => calls.push({ value, pointer })
             );
 
@@ -180,7 +178,7 @@ describe("query.run", () => {
         });
 
         it("should continue after query", () => {
-            query.run({
+            get({
                 first: {
                     value: "text"
                 },
@@ -196,7 +194,7 @@ describe("query.run", () => {
         });
 
         it("should filter numbers", () => {
-            let result = query.run({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
+            let result = get({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
 
             expect(result.length).to.eq(2);
             expect(result).to.deep.equal([{ id: 1 }, { id: "1" }]);
@@ -207,7 +205,7 @@ describe("query.run", () => {
     describe("**", () => {
 
         it("should callback on all keys", () => {
-            query.run({
+            get({
                 "1": {
                     value: "2",
                     "3": {
@@ -227,7 +225,7 @@ describe("query.run", () => {
 
         // no root is added -> result += 1
         it.skip("should callback on all keys, even without /*", () => {
-            const res = query.run({
+            const res = get({
                 "1": {
                     value: "2",
                     "3": {
@@ -246,7 +244,7 @@ describe("query.run", () => {
         });
 
         it("should callback on all matched keys", () => {
-            const res = query.run({
+            const res = get({
                 first: {
                     value: "text",
                     inner: {
@@ -265,7 +263,7 @@ describe("query.run", () => {
         });
 
         it("should continue on matched globs", () => {
-            query.run({
+            get({
                 a: {
                     id: "a",
                     needle: "needle"
@@ -297,7 +295,7 @@ describe("query.run", () => {
     describe("regex", () => {
 
         it("should apply {...} as regex on property names", () => {
-            query.run({
+            get({
                 a1: true,
                 b1: false,
                 a2: true,

@@ -2,13 +2,9 @@
 /build/
 /release/
 /docs/
-/test/
-
-bower.json
-Gruntfile.js
+/.nyc_output/
 
 *.sublime*
-status.png
 
 .DS_Store
 Thumbs.db
