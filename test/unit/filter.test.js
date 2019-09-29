@@ -3,7 +3,7 @@ const { expect } = require("chai");
 // const query = require("../../lib");
 // const { filter } = query;
 const run = require("../../lib/v2/run");
-const filter = { values: (data, query) => run(data, query).map(r => r[0]) };
+const filter = { values: (data, query) => run(data, query) };
 
 
 describe("filter", () => {

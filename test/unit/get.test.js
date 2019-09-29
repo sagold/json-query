@@ -34,7 +34,7 @@ describe("query.get", () => {
         expect(result).to.have.length(0);
     });
 
-    it("should return all queried values in array", () => {
+    it("should return all queried values per default", () => {
         const result = query.get(data, "#/**/*?needle:needle");
 
         expect(result).to.have.length(4);
@@ -48,7 +48,7 @@ describe("query.get", () => {
         expect(result).to.contain("#/a", "#/b", "#/b/d", "#/c/e/f");
     });
 
-    it("should return all queried values in array", () => {
+    it("should return all ids", () => {
         const result = query.get(data, "#/**/*/id", query.get.VALUE);
 
         expect(result).to.have.length(4);

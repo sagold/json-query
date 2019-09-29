@@ -2,10 +2,10 @@
 const { expect } = require("chai");
 // const pattern = require("../../lib/pattern");
 const run = require("../../lib/v2/run");
-const pattern = (data, pointer, cb) => run(data, pointer, cb).map(r => r[0]);
+const pattern = (data, pointer, cb) => run(data, pointer, cb);
 
 
-describe.only("pattern", () => {
+describe("pattern", () => {
     let data;
     beforeEach(() => {
         data = {
@@ -165,26 +165,26 @@ describe.only("pattern", () => {
     });
 
 
-    describe.skip("callback", () => {
+    describe("callback", () => {
         const get = require("../../lib/get");
 
         it("should return values", () => {
-            const result = pattern(data, "(/a)+/value", get.VALUE);
+            const result = run(data, "(/a)+/value", get.VALUE);
             expect(result).to.deep.equal(["1", "2", "3", "4"]);
         });
 
         it("should return pointers", () => {
-            const result = pattern(data, "(/a)+/value", get.POINTER);
+            const result = run(data, "(/a)+/value", get.POINTER);
             expect(result).to.deep.equal(["#/a/value", "#/a/a/value", "#/a/a/a/value", "#/a/a/a/a/value"]);
         });
 
         it("should return pointers", () => {
-            const result = pattern(data, "(/a)+/value", get.POINTER);
+            const result = run(data, "(/a)+/value", get.POINTER);
             expect(result).to.deep.equal(["#/a/value", "#/a/a/value", "#/a/a/a/value", "#/a/a/a/a/value"]);
         });
 
         it("should return {pointer:value}", () => {
-            const result = pattern(data, "(/a)+/value", get.MAP);
+            const result = run(data, "(/a)+/value", get.MAP);
             expect(result).to.deep.equal({
                 "#/a/value": "1",
                 "#/a/a/value": "2",
@@ -195,7 +195,7 @@ describe.only("pattern", () => {
 
         it("should call callback-function", () => {
             const result = {};
-            pattern(data, "(/a)+/value", (key, value, parent, pointer) => {
+            run(data, "(/a)+/value", (key, value, parent, pointer) => {
                 result[pointer] = true;
             });
 

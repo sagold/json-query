@@ -197,7 +197,6 @@ describe("query.run", () => {
 
         it("should filter numbers", () => {
             let result = query.run({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
-            result = result.map(r => r[0]);
 
             expect(result.length).to.eq(2);
             expect(result).to.deep.equal([{ id: 1 }, { id: "1" }]);
