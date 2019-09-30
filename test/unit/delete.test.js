@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const query = require("../../lib");
 
 
-describe("query.delete", () => {
+describe("delete", () => {
 
     let data;
 
@@ -33,7 +33,6 @@ describe("query.delete", () => {
 
     it("should delete any matches", () => {
         const result = query.delete(data, "#/**/*/needle");
-
         expect(result.a.needle).to.be.undefined;
         expect(result.b.needle).to.be.undefined;
         expect(result.b.d.needle).to.be.undefined;
@@ -42,7 +41,6 @@ describe("query.delete", () => {
 
     it("should delete any matches supporting filters", () => {
         const result = query.delete(data, "#/**/*?needle:needle");
-
         expect(result.a).to.be.undefined;
         expect(result.b).to.be.undefined;
         expect(result.c.e.f).to.be.undefined;
@@ -50,7 +48,6 @@ describe("query.delete", () => {
 
     it("should also remove array indices", () => {
         const result = query.delete({ array: [1, { remove: true }, { remove: true }, 2] }, "#/array/*?remove:true");
-
         expect(result.array).to.have.length(2);
         expect(result.array).to.deep.equal([1, 2]);
     });

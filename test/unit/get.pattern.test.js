@@ -3,7 +3,7 @@ const { expect } = require("chai");
 const get = require("../../lib/get");
 
 
-describe("pattern", () => {
+describe("get.pattern", () => {
     let data;
     beforeEach(() => {
         data = {
