@@ -1,6 +1,7 @@
 /* eslint object-property-newline: 0 */
 const { expect } = require("chai");
 const get = require("../../lib/get");
+const { parse } = require("../../lib/parser");
 
 
 describe("get", () => {
@@ -333,6 +334,52 @@ describe("get", () => {
 
             expect(result).to.have.length(1);
             expect(result).to.contain("custom-#/a/c/d");
+        });
+    });
+
+
+    describe("circular references", () => {
+
+        it("should parse simple queries into circular references", () => {
+            const a = { id: "a" };
+            const b = { id: "b" };
+            a.node = b;
+            b.node = a;
+
+            const result = get(a, "#/node/node/node/id");
+            expect(result).to.have.length(1);
+            expect(result).to.deep.eq(["b"]);
+        });
+
+        it("should not parse data twice for all operator", () => {
+            const a = { id: "a" };
+            const b = { id: "b" };
+            a.node = b;
+            b.node = a;
+
+            const result = get(a, "/**/id");
+            expect(result).to.have.length(2);
+        });
+
+        it("should reset cache for next query", () => {
+            const a = { id: "a" };
+            const b = { id: "b" };
+            a.node = b;
+            b.node = a;
+
+            const first = get(a, "/**/id");
+            expect(first).to.have.length(2, "expected first run to have 2 matches");
+
+            const second = get(a, "/**/id");
+            expect(second).to.have.length(2, "expected second run to have 2 matches");
+        });
+
+        it("should finish parsing circular ast", () => {
+            const ast = parse("#/recursive/tree/referencing?parent");
+
+            const result = get(ast, "**?type:lookahead");
+            expect(result).to.have.length(1);
+            expect(result[0].type).to.eq("lookahead");
         });
     });
 });
