@@ -58,7 +58,6 @@ describe("expression", () => {
         expect(result).to.deep.equal([{}]);
     });
 
-
     describe("regex", () => {
 
         it("should support regex-tests", () => {

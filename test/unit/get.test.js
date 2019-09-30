@@ -300,6 +300,7 @@ describe("get", () => {
         });
     });
 
+
     describe("regex", () => {
 
         it("should apply {...} as regex on property names", () => {
@@ -316,6 +317,54 @@ describe("get", () => {
             expect(cbMock.args[1][3]).to.eq("#/a2");
         });
     });
+
+
+    describe("typecheck", () => {
+        let input;
+        beforeEach(() => input = {
+            a: "string",
+            b: true,
+            c: {},
+            d: [],
+            e: 144,
+            list: [
+                false,
+                { id: "message" },
+                42
+            ]
+        });
+
+        it("should support typechecks", () => {
+            const result = get(input, "/**?:string");
+            expect(result).to.deep.equal(["string", "message"]);
+        });
+
+        it("should return boolean", () => {
+            const result = get(input, "/**?:boolean");
+            expect(result).to.deep.equal([true, false]);
+        });
+
+        it("should return numbers", () => {
+            const result = get(input, "/**?:number");
+            expect(result).to.deep.equal([144, 42]);
+        });
+
+        it("should return objects", () => {
+            const result = get(input, "/**?:object");
+            expect(result).to.deep.equal([input, {}, { id: "message" }]);
+        });
+
+        it("should return arrays", () => {
+            const result = get(input, "/**?:array");
+            expect(result).to.deep.equal([[], [false, { id: "message" }, 42 ]]);
+        });
+
+        it("should return non-object and non-arrays", () => {
+            const result = get(input, "/**?:value");
+            expect(result).to.deep.equal(["string", true, 144, false, "message", 42]);
+        });
+    });
+
 
     describe("callback", () => {
 

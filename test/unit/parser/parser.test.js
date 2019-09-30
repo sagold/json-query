@@ -1,12 +1,5 @@
 const { expect } = require("chai");
-const { join } = require("gson-pointer");
 const { parse } = require("../../../lib/parser");
-
-
-const valid = /(children|text|type|start|end|rest|errors|fullText|\d+)/;
-const subset = /(children|text|type|\d+)/;
-const toJSON = (ast) => JSON.stringify(ast, (key, value) => (key === "" || valid.test(key)) ? value : undefined, 2);
-const toSmallJSON = (ast) => JSON.stringify(ast, (key, value) => (key === "" || (key === "rest" && value !== "") || subset.test(key)) ? value : undefined, 2);
 
 
 describe("parser", () => {
@@ -54,6 +47,18 @@ describe("parser", () => {
 
     it("should support patterns filters", () => {
         const r = parse("#( (/a), (/b)(/c) )+?id");
+        expect(r).not.to.eq(null);
+        expect(r.rest).to.eq("");
+    });
+
+    it("should support typechecks", () => {
+        const r = parse("#/a/b?:string");
+        expect(r).not.to.eq(null);
+        expect(r.rest).to.eq("");
+    });
+
+    it("should support typechecks with lookahead", () => {
+        const r = parse("#/a/b?:object?prop");
         expect(r).not.to.eq(null);
         expect(r.rest).to.eq("");
     });
