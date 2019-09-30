@@ -2,7 +2,7 @@
 
 > gson-query lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data
 
-**npm package** `gson-query`. The command-line integration can be installed separately from [gson-query-cli](https://github.com/sagold/gson-query-cli)
+**npm package** `gson-query`. An es5-version is bundled at `dist/gson-query.js`. The command-line integration can be installed separately from [gson-query-cli](https://github.com/sagold/gson-query-cli).
 
 - [Features](#features)
 - [Introduction](#quick-introduction)
@@ -10,6 +10,9 @@
 - [API](#api)
 - [About patterns](#about-patterns)
 - [Further examples](#further-examples)
+
+
+## Usage
 
 
 ## Features
@@ -148,7 +151,6 @@ const values = get(input, "/(/a)+"); // [{ id: 2, a: { id: 3, a: 4 } }, { id: 3,
 
 - with version `v4.0.0` (2019/10/01)
     - the api has been simplified to methods `query.get` and `query.delete` (removed `run` and `pattern`)
-    - default package-entry is a es5-web-bundle
 - with version `v3.0.0`
     - the syntax has changed to es6, which might require code transpilation
     - queries for root-pointer (`#`, `#/`, `/`) now callback root object with `(rootObject, null, null, "#")`

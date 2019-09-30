@@ -2,7 +2,7 @@
   "name": "gson-query",
   "version": "4.1.0",
   "description": "json-pointer utilities for querying and transforming data",
-  "main": "dist/gson-query.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sagold/gson-query.git"
