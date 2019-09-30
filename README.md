@@ -1,325 +1,233 @@
 <h1 align="left"><img src="./docs/gson-query.png" width="256" alt="gson-query"></h1>
 
-**Query and transform your json data using an extended glob-pattern within browsers or nodejs**
+> gson-query lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data
 
-> Query and transform your json data using an extended glob-pattern. This is a really helpful tool to quickly
->
-> - fuzzy search json-data matching some search properties
-> - transform data with consistent structures
-> - extract information from json-data
+**npm package** `gson-query`. The command-line integration can be installed separately from [gson-query-cli](https://github.com/sagold/gson-query-cli)
 
-`npm install gson-query --save`
-
-and get it like
-
-`const query = require("gson-query");`
-
-The command-line integration can be installed separately by [gson-query-cli](https://github.com/sagold/gson-query-cli)
-
-
+- [Features](#features)
 - [Introduction](#quick-introduction)
+- [Breaking Changes](#breaking-changes)
 - [API](#api)
-  - [query](#query)
-  - [callback](#callback)
-  - [query.run](#queryrun)
-  - [query.get](#queryget)
-  - [query.delete](#querydelete)
-  - [query.pattern](#querypattern)
+- [About patterns](#about-patterns)
 - [Further examples](#further-examples)
 
-## Breaking Changes
 
-- with version `v3.0.0` (2019/09/26)
-    - the syntax has changed to es6, which might require code transpilation
-    - queries for root-pointer (`#`, `#/`, `/`) no callback root object with `(rootObject, null, null, "#")`
-- with `v2.0.0` a negated filter (lookahead), e.g. `*?valid:!true` will not return objects where `valid === undefined`. To match objects with missing properties you can still query them explicitly with `*?valid:!true||valid:undefined`
+## Features
+
+- [json-pointer](https://github.com/sagold/json-pointer) syntax `#/list/0/id`
+- glob-patterns for properties (`*`, `**`)
+- regex-support for properties `{any.*}`
+- pattern-support for inifinite recursion `/tree(/nodes/*)+/value`
+- or-patterns `/node((/left), (/right))`
+- finite search in circular-data `**`
+- lookahead-rules to test selected property `?property:value` and regex values `?property:{\d+}`
+- and typechecks `/value?:array`
+
 
 ## Quick introduction
 
-`<string|glob|regex>?<string><is|isnot><string|regex>`
-
-
-**run** a callback-function on each match of your _query_
+Basically, a **query** is a json-pointer, which describes a path of properties into the json-data
 
 ```js
-query.run(data, "/server/*/services/*", callback);
+import { get } from "gson-query";
+const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
+
+const values = get(input, "/object/a/id"); // ["id-a"]
 ```
 
-a **callback** receives the following arguments
+
+But each property may also be a glob-pattern or a regular expression:
+
+`*` selects all direct children
 
 ```js
-/**
- * @param {Any} value              - value of the matching query
- * @param {String} key             - the property or index of the value
- * @param {Object|Array} parent    - parent[key] === value
- * @param {String} jsonPointer     - json-pointer in data, pointing to value
- */
-function callback(value, key, parent, jsonPointer) => { /* do sth */ }
+const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
+
+const values = get(input, "/object/*/id"); // ["id-a", "id-b"]
 ```
 
-**get** matches in an array instead of running a callback
+
+`**` selects all values
 
 ```js
-let results = query.get(data, "/server/*?state:critical", query.get.VALUE); // or POINTER or ALL
+const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
+
+const values = get(input, "/object/**/id");
+// [ { a: { id: "id-a" }, b: { id: "id-b" } }, { id: "id-a" }, "id-a", { id: "id-b" }, "id-b" ]
 ```
 
-which is the same as
+
+`{}` calls a regular expression
 
 ```js
-let results = query.get(data, "/server/*/services/*", (value) => value);
+const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
+
+const values = get(input, "/{obj.*}/{.*}/id"); // ["id-a", "id-b"]
 ```
 
-or quickly **delete** properties from your data
+
+**lookahead** rules are used to validate the current value based on its properties
+
+`?child` tests if a childProperty is defined
 
 ```js
-query.delete(data, "/server/*/services/{szm-.*}");
+const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
+
+const values = get(input, "/object/*?id"); // [{ id: "id-a" }, { id: "id-b" }]
 ```
 
-Use **patterns** to query patterns recursively
+
+`?child:value` tests if a childProperty matches a value
 
 ```js
-query.pattern(data, "/node(/nodes/*)+/value");
+const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
+
+const values = get(input, "/object/*?id:id-b"); // [{ id: "id-b" }]
 ```
 
-and to select multiple properties of an object or array:
+lookahead rules can also be negated `?child:!value`, tested by regex `?child:{^re+}`, combined `?child&&other` or joined `?child||other`. Undefined may be tested with `?property:undefined`, per default `undefined` is excluded from matches.
+
+
+**typechecks** can be used to query certain data-types
+
+`?:<type>`, where `<type>` may be any of `["boolean", "string", "number", "object", "array", "value"]`
+
 ```js
-query.pattern(data, "/server((/store), (/{front-.*}))/services/*");
+const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
+
+const values = get(input, "/**?:string"); // ["id-b"]
 ```
 
+`?:value` will match all types except *objects* and *arrays*
+
+```js
+const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
+
+const values = get(input, "/**?:value"); // [33, "id-b"]
+```
+
+
+**patterns** can be used to combine queries into a single result (*OR*) and to build up results from recursive queries (*+*)
+
+Queries can be grouped by parenthesis, where `/a/b/c = /a(/b)(/c) = /a(/b/c)`.
+
+`((/a), (/b))` resolves both queries on the previous result
+
+```js
+const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
+
+const values = get(input, "/object((/a), (/b))"); // [{ id: 33 }, { id: "id-b" }]
+```
+
+and the result may be queried further
+
+```js
+get(input, "/object((/a), (/b))/id"); // [33, "id-b"]
+get(input, "/object((/a), (/b))/id?:number"); // [33]
+```
+
+`(/a)+` will repeat the grouped query for all possible results
+
+```js
+const input = {
+    id: 1,
+    a: { // first iteration
+        id: 2,
+        a: { // second iteration
+            id: 3
+            a: 4 // last iteration
+        }
+    }
+};
+
+const values = get(input, "/(/a)+"); // [{ id: 2, a: { id: 3, a: 4 } }, { id: 3, a: 4 }, 4]
+```
+
+
+## Breaking Changes
+
+- with version `v4.0.0` (2019/10/01)
+    - the api has been simplified to methods `query.get` and `query.delete` (removed `run` and `pattern`)
+    - default package-entry is a es5-web-bundle
+- with version `v3.0.0`
+    - the syntax has changed to es6, which might require code transpilation
+    - queries for root-pointer (`#`, `#/`, `/`) now callback root object with `(rootObject, null, null, "#")`
+- with `v2.0.0` a negated filter (lookahead), e.g. `*?valid:!true` will not return objects where `valid === undefined`. To match objects with missing properties you can still query them explicitly with `*?valid:!true||valid:undefined`
 
 
 ## API
 
-All examples import `const query = require("gson-query");`
+*gson-query* exposes to methods `get` and `remove`
 
-### query
+method  | signature                                                         | description
+--------|-------------------------------------------------------------------|------------------------------
+get     | (input:any, query: string, returnType?:string\|function)          | query data, returns results
+remove  | (input:any, query: string, returnRemoved?:boolean)                | delete query targets, returns input
 
-At first, **json-query** acts like a normal [**json-pointer**](https://github.com/sagold/json-pointer)
+
+**get**
+
+per default, *get* returns a list of all values
 
 ```js
-let data = {
-  "parent": {
-    "child": { "id": "child-1" }
-  }
-};
-const result = query.get(data, "#/parent/child/id", query.get.VALUE);
-// result:
-[
-  "child-1"
-]
+import { get } from "gson-query";
+const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
+const values = get(input, "/**?:value"); // [33, "id-b"]
 ```
 
-But query also supports **glob-patterns** with `*`:
+Using the optional value `returnType` you can change the result type to the following options
+`["all", "value", "pointer", "map"]`. The string values can also be accessed as property on `get`: `get.ALL, get.VALUE, get.POINTER, get.MAP`:
+
+
+returnType  | description
+------------|------------------------------------------------------------------
+"value"     | returns all matched values of the query `[33, "id-b"]`
+"pointer"   | returns json-pointer to results `["#/object/a", "#/object/b"]`
+"map"       | returns an pairs of `jsonPointer: resultValue` as an object
+"all"       | returns a list, where each result is an array of `[value, keyToValue, parentObject, jsonPointer]`
+function    | callback with `(value, keyToValue, parentObject, jsonPointer) => {}`. If a value is returned, the result will be replaced by the return-value
+
 
 ```js
-let data = {
-  "parent": {
-    "child": { "id": "child-1" }
-  },
-  "neighbour": {
-    "child": { "id": "child-2" }
-  }
-};
-const result = query.get(data, "#/*/child/id", query.get.VALUE);
-// result:
-[
-  "child-1",
-  "child-2"
-]
-```
+import { get } from "gson-query";
+const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
 
-and **glob-patterns** with `**`:
+get(input, "/**?:value", get.VALUE); // [33, "id-b"]
+get(input, "/**?:value", get.POINTER); // ["#/object/a/id", "#/object/b/id"]
+get(input, "/**?:value", get.MAP); // { "#/object/a/id": 33, "#/object/b/id": "id-b" }
 
-```js
-let data = {
-  "parent": {
-    "id": "parent",
-    "child": {"id": "child-1"}
-  },
-  "neighbour": {
-    "child": {"id": "child-2"}
-  }
-};
-const result = query.get(data, "#/**/id", query.get.VALUE);
-// result:
-[
-  "parent",
-  "child-1",
-  "child-2"
-]
-```
+get(input, "/**?:value", get.ALL);
+// [
+//    [33, "id", { id: 33 }, "#/object/a/id"],
+//    ["id-b", "id", { id: "id-b" }, "#/object/b/id"]
+// ]
 
-or simply call `query.get(data, "#/**", query.get.VALUE)` to query the value of each property
-
-```js
-let data = {
-  "parent": {
-    "id": "parent",
-    "child": { "id": "child-1" }
-  }
-};
-const result = query.get(data, "#/**/id", query.get.VALUE);
-// result:
-[
-  {
-    "id":"parent",
-    "child": { "id":"child-1" }
-  },
-  "parent",
-  { "id":"child-1" },
-  "child-1"
-]
-```
-
-To **filter** the matched objects, an object-query string may be appended on each single step:
-
-```js
-let data = {
-  "parent": {
-    "valid": true,
-    "child": {"id": "child-1"}
-  },
-  "neighbour": {
-    "valid": false,
-    "child": {"id": "child-2"}
-  },
-  "dungeons": {
-    "child": {"id": "child-3"}
-  }
-};
-let result = query.get(data, "#/**?valid:true&&ignore:undefined/child", query.get.VALUE);
-// same result with
-result = query.get(data, "#/**?valid:!false/child", query.get.VALUE);
-// result:
-[
-  {
-    "valid": true,
-    "child": {"id": "child-1"}
-  }
-]
-```
-
-or match all objects that have a defined property _valid_ like `query.run(data, "#/**?valid", callback)`.
-
-```js
-let data = {
-  "parent": {
-    "valid": true,
-    "child": {"id": "child-1"}
-  },
-  "neighbour": {
-    "valid": false,
-    "child": {"id": "child-2"}
-  },
-  "dungeons": {
-    "child": {"id": "child-3"}
-  }
-};
-const result = query.get(data, "#/**?valid", query.get.VALUE);
-// result:
-[
-  {
-    "valid": true,
-    "child": {
-      "id": "child-1"
-    }
-  },
-  {
-    "valid": false,
-    "child": {
-      "id": "child-2"
-    }
-  }
-]
-```
-
-**regular expression** must be wrapped with `{.*}`:
-
-```js
-let data = {
-  "albert": {valid: true},
-  "alfred": {valid: false},
-  "alfons": {valid: true}
-};
-const result = query.get(data, "#/{al[^b]}?valid:true", query.get.POINTER);
-// result:
-[
-  "#/alfred"
-]
+get(input, "/**?:value", (value, key, parent, pointer) => `custom-${pointer}`);
+// ["custom-#/object/a/id", "custom-#/object/b/id"]
 ```
 
 
-### query.run
-
-If you want a callback on each match use `query.run(data:object|array, query:string, callback:function):void`
+**remove** deletes any match from the input data.
+Note: the input will be modified. If this is unwanted behaviour, copy your data up front.
 
 ```js
-query.run(data, "#/**/*?valid", (value, key, parent, jsonPointer) => {});
+import { remove } from "gson-query";
+const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
+
+remove(input, "/object/*/id"); // { object: { a: {}, b: {} } };
+```
+
+Per default, the input object is returned. Setting the optional argument `returnRemoved = true`, will return a list of the removed items
+
+```js
+import { remove } from "gson-query";
+const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
+
+remove(input, "/object/*/id", true); // [ 33, "id-b" ]
 ```
 
 
-### callback
-
-Each **callback** has the following signature
-`callback(value:any, key:string, parent:object|array, jsonPointer:string)`
-
-```js
-/**
- * @param {Any} value              - value of the matching query
- * @param {String} key             - the property or index of the value
- * @param {Object|Array} parent    - parent[key] === value
- * @param {String} jsonPointer     - json-pointer in data, pointing to value
- */
-function callback(value, key, parent, jsonPointer) => { /* do sth */ }
-```
-
-
-### query.get
-
-If you only require values or pointers, use `query.get(data:object|array, query:string, type:TYPE = "all")` to receive an Array or Object as result
-
-```js
-// default: query.get.VALUES
-let arrayOfValues = query.get(data, "#/**/id", query.get.VALUE);
-// result: [value, value]
-
-let arrayOfJsonPointers = query.get(data, "#/**/id", query.get.POINTER);
-// result: ["#/..", "#/..", ...]
-
-let arrayOfAllFourArguments = query.get(data, "#/**/id", query.get.ALL);
-// result: [arguments, arguments], where arguments = 0:value 1:object 2:key 3:jsonPointer
-
-let mapOfPointersAndData = query.get(data, "#/**/id", query.get.MAP);
-// result: {"#/..": value, "#/..": value}
-
-let mapOfPointersAndData = query.get(data, "#/**/id", (val, key, parent, pointer) => `custom-${pointer}`);
-// result: ["custom-#/parent/child/id", "custom-#/neighbour/child/id", "custom-#/dungeons/child/id"]
-```
-
-
-### query.delete
-
-Multiple items on objects or in arrays may also be delete with `query.delete(data:object|array, query:string):void`:
-
-```js
-query.delete(data, "#/**/*/data");
-```
-
-
-### query.pattern
-
-The pattern-queries behave as the default `query.get` methods:
-
-```js
-import query from "gson-query";
-
-// predefined callback
-const targets = query.pattern(data, "#/*(/node/*?valid)+/valid", query.get.POINTER); // return pointers
-const values = query.pattern(data, "#/*(/node/*?valid)+/valid", query.get.VALUES); // return values
-// ...
-// custom callback
-query.pattern(data, "#/*(/node/*?valid)+/valid", (value, key, parent, jsonPointer) => {});
-```
+## About patterns
 
 Pattern-queries enable selection of recursive patterns and offer a way to build up a collection of data for further filterung. A pattern uses brackets `()` to identify repeatable structures and offers multiple selections for the same data-entry.
 
@@ -339,11 +247,11 @@ const data = {
   }
 };
 
-const result = query.pattern(data, "#/tree((/left),(/right))*/id");
+const result = get(data, "#/tree((/left),(/right))*/id");
 // ["1", "2", "3", "4"]
 ```
 
-**Note** that each pattern-queries are resovled using `query.get` and thus support all mentioned features.
+**Note** that each pattern-queries is resovled using `query.get` and thus supports all mentioned features.
 
 One use-case for pattern-queries can be found in json-schema specification. Any definition in `#/defs` may reference itself or be referenced circular. A linear query cannot describe the corresponding data, but pattern-queries might be sufficient.
 
@@ -379,7 +287,5 @@ Currently, using **OR** is *commutative* in a sense that `((/a),(/b)) = ((/b),(/
 
 for further examples refer to the unit tests
 
-- [query.delete](https://github.com/sagold/json-query/blob/master/test/unit/queryDelete.test.js)
-- [query.get](https://github.com/sagold/json-query/blob/master/test/unit/queryGet.test.js)
-- [query.query](https://github.com/sagold/json-query/blob/master/test/unit/query.test.js)
-- [query.pattern](https://github.com/sagold/json-query/blob/master/test/unit/pattern.test.js)
+- [query.delete](https://github.com/sagold/json-query/blob/master/test/unit/delete.test.js)
+- [query.get](https://github.com/sagold/json-query/blob/master/test/unit/get.test.js)
