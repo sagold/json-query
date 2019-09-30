@@ -55,8 +55,9 @@ describe("remove", () => {
     });
 
     it("should also remove array indices", () => {
-        const data = remove(data, "#/array/*?remove:true");
-        expect(data.array).to.have.length(2);
-        expect(data.array).to.deep.equal([1, 2]);
+        const data = { array: [1, { remove: true }, { remove: true }, 2] };
+        const result = remove(data, "#/array/*?remove:true");
+        expect(result.array).to.have.length(2);
+        expect(result.array).to.deep.equal([1, 2]);
     });
 });
