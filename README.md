@@ -12,9 +12,6 @@
 - [Further examples](#further-examples)
 
 
-## Usage
-
-
 ## Features
 
 - [json-pointer](https://github.com/sagold/json-pointer) syntax `#/list/0/id`
