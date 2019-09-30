@@ -36,6 +36,9 @@ The command-line integration can be installed separately by [gson-query-cli](htt
 
 ## Quick introduction
 
+`<string|glob|regex>?<string><is|isnot><string|regex>`
+
+
 **run** a callback-function on each match of your _query_
 
 ```js

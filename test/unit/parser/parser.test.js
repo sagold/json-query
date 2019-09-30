@@ -35,7 +35,7 @@ describe("parser", () => {
     });
 
     it("should support queries", () => {
-        const r = parse("/prop/**/*?{^id.*}:0");
+        const r = parse("/prop/**/*?prop:0");
         expect(r).not.to.eq(null);
         expect(r.rest).to.eq("");
     });
