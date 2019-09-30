@@ -52,7 +52,7 @@ const values = get(input, "/object/*/id"); // ["id-a", "id-b"]
 ```js
 const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
 
-const values = get(input, "/object/**/id");
+const values = get(input, "/object/**");
 // [ { a: { id: "id-a" }, b: { id: "id-b" } }, { id: "id-a" }, "id-a", { id: "id-b" }, "id-b" ]
 ```
 
