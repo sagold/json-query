@@ -17,6 +17,11 @@ describe("get", () => {
         cbMock.args = [];
     });
 
+    it("should throw an error for a invalid query", () => {
+        expect(() => get({}, "query//woot")).to.throw(Error)
+            .with.property("message", "Failed parsing queryString from: '//woot'");
+    });
+
     it("should return empty array", () => {
         const result = get({}, "#/**/*?needle:needle");
 

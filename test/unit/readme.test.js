@@ -37,6 +37,17 @@ describe("query", () => {
             expect(cbMock.args[1][0]).to.eq("child-2");
         });
 
+        it("should select all child-values", () => {
+            const r = get({ object: { a: { id: "id-a" }, b: { id: "id-b" } } }, "/object/**");
+            expect(r).to.deep.equal([
+               { a: { id: "id-a" }, b: { id: "id-b" } },
+               { id: "id-a" },
+               "id-a",
+               { id: "id-b" },
+               "id-b"
+            ]);
+        });
+
         it("should callback on each objects id property", () => {
             const data = {
                 parent: {
