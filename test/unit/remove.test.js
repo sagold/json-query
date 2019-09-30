@@ -32,7 +32,7 @@ describe("remove", () => {
     });
 
     it("should delete any matches", () => {
-        const removed = remove(data, "#/**/*/needle");
+        const removed = remove(data, "#/**/*/needle", true);
         expect(data.a.needle).to.be.undefined;
         expect(data.b.needle).to.be.undefined;
         expect(data.b.d.needle).to.be.undefined;
@@ -42,7 +42,7 @@ describe("remove", () => {
     });
 
     it("should delete any matches supporting filters", () => {
-        const removed = remove(data, "#/**/*?needle:needle");
+        const removed = remove(data, "#/**/*?needle:needle", true);
         expect(data.a).to.be.undefined;
         expect(data.b).to.be.undefined;
         expect(data.c.e.f).to.be.undefined;
@@ -55,10 +55,8 @@ describe("remove", () => {
     });
 
     it("should also remove array indices", () => {
-        data = { array: [1, { remove: true }, { remove: true }, 2] };
-        const removed = remove(data, "#/array/*?remove:true");
+        const data = remove(data, "#/array/*?remove:true");
         expect(data.array).to.have.length(2);
         expect(data.array).to.deep.equal([1, 2]);
-        expect(removed).to.deep.eq([{ remove: true }, { remove: true }]);
     });
 });
