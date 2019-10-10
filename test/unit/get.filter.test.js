@@ -102,10 +102,31 @@ describe("get.filter", () => {
         expect(result.length).to.eq(2);
     });
 
-    it("should treat numbers as strings", () => {
-        const result = get({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
-        expect(result.length).to.eq(2);
-        expect(result).to.deep.equal([{ id: 1 }, { id: "1" }]);
+
+    describe("test-value", () => {
+        it("should treat numbers as strings", () => {
+            const result = get({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
+            expect(result.length).to.eq(2);
+            expect(result).to.deep.equal([{ id: 1 }, { id: "1" }]);
+        });
+
+        it("should support regex test-values", () => {
+            const result = get({ a: { id: "word" }, b: { id: "12" } }, "*?id:{\\d\\d}");
+            expect(result.length).to.eq(1);
+            expect(result).to.deep.equal([{ id: "12" }]);
+        });
+
+        it("should support json-pointer in regex", () => {
+            const result = get({ a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } }, "*?$ref:{#/b-target}");
+            expect(result.length).to.eq(1);
+            expect(result).to.deep.equal([{ $ref: "#/b-target" }]);
+        });
+
+        it("should support json-pointer when escaped by quotes", () => {
+            const result = get({ a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } }, "*?$ref:\"#/b-target\"");
+            expect(result.length).to.eq(1);
+            expect(result).to.deep.equal([{ $ref: "#/b-target" }]);
+        });
     });
 
 

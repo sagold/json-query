@@ -222,6 +222,37 @@ describe("get", () => {
     });
 
 
+    describe("escaping quotes", () => {
+
+        it("should escape property in quotes", () => {
+            const result = get({ "{a/b)": { "#c/d?": "..." } }, '"{a/b)"/"#c/d?"');
+
+            expect(result.length).to.eq(1);
+            expect(result).to.deep.equal(["..."]);
+        });
+
+        it("should escape query-property in quotes", () => {
+            const result = get({ a: { "#/id/x": 1 }, b: { "#/id/x": 2 } }, "*?\"#/id/x\"");
+
+            expect(result.length).to.eq(2);
+            expect(result).to.deep.equal([{ "#/id/x": 1 }, { "#/id/x": 2 }]);
+        });
+
+        it("should escape property in quotes", () => {
+            const result = get({ "{a/b)": { "#c/d?": "..." } }, '"{a/b)"/"#c/d?"');
+
+            expect(result.length).to.eq(1);
+            expect(result).to.deep.equal(["..."]);
+        });
+
+        it("should escape test-value in quotes", () => {
+            const result = get({ a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } }, "*?$ref:\"#/b-target\"");
+            expect(result.length).to.eq(1);
+            expect(result).to.deep.equal([{ $ref: "#/b-target" }]);
+        });
+    });
+
+
     describe("**", () => {
 
         it("should callback on all keys", () => {

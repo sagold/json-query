@@ -65,6 +65,8 @@ const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
 const values = get(input, "/{obj.*}/{.*}/id"); // ["id-a", "id-b"]
 ```
 
+> Note. Regular expressions within strings, have to escape any backslashes, e.g. instead of `{\d}` you need to pass `{\\d}`
+
 
 **lookahead** rules are used to validate the current value based on its properties
 
@@ -144,6 +146,13 @@ const values = get(input, "/(/a)+"); // [{ id: 2, a: { id: 3, a: 4 } }, { id: 3,
 ```
 
 
+**escaping properties** In case you have special characters in property-names or values, you can escape any value using doubled-quotes `"<value>"`:
+
+- escape property-name: `'/root/*/"strange/property"'` is split to `["root", "*", "strange/property"]`
+- escape query-property `'/root/*?"strange/property"':42`
+- escape query-value `'/root/*?id:"#/pointer/value"`
+
+
 ## Breaking Changes
 
 - with version `v4.0.0` (2019/10/01)
@@ -156,7 +165,7 @@ const values = get(input, "/(/a)+"); // [{ id: 2, a: { id: 3, a: 4 } }, { id: 3,
 
 ## API
 
-*gson-query* exposes to methods `get` and `remove`
+*gson-query* exposes two methods `get` and `remove`
 
 method  | signature                                                         | description
 --------|-------------------------------------------------------------------|------------------------------
