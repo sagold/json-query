@@ -29,6 +29,13 @@ describe("get", () => {
         expect(result).to.have.length(0);
     });
 
+    it("should resolve properties containing ':'", () => {
+        const result = get({ a: { "b:c": 42 } }, "#/a/b:c");
+
+        expect(result).to.be.an("array");
+        expect(result).to.deep.eq([ 42 ]);
+    });
+
     it("should callback for matched jsonpointer", () => {
         get({
             first: {
