@@ -149,8 +149,8 @@ const values = get(input, "/(/a)+"); // [{ id: 2, a: { id: 3, a: 4 } }, { id: 3,
 **escaping properties** In case you have special characters in property-names or values, you can escape any value using doubled-quotes `"<value>"`:
 
 - escape property-name: `'/root/*/"strange/property"'` is split to `["root", "*", "strange/property"]`
-- escape query-property `'/root/*?"strange/property"':42`
-- escape query-value `'/root/*?id:"#/pointer/value"`
+- escape query-property `'/root/*?"strange/property":42'`
+- escape query-value `'/root/*?id:"#/pointer/value"'`
 
 
 ## Breaking Changes
