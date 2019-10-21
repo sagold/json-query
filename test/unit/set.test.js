@@ -1,7 +1,6 @@
 /* eslint object-property-newline: 0 */
 const { expect } = require("chai");
 const set = require("../../lib/set");
-// const { parse } = require("../../lib/parser");
 
 
 describe("set", () => {
@@ -26,14 +25,24 @@ describe("set", () => {
 
     describe("array", () => {
 
-        it("should insert array instead of object", () => {
-            const result = set({}, "/outer/[]/value", 9);
+        it("should create array and append item", () => {
+            const result = set({}, "/outer[]/[]/value", 9);
             expect(result).to.deep.eq({ outer: [{ value: 9 }] });
         });
 
-        it("should create and insert object at array index", () => {
+        it("should create array based on array indicator", () => {
+            const result = set({}, "/outer[]/1/value", 9);
+            expect(result).to.deep.eq({ outer: [undefined, { value: 9 }] });
+        });
+
+        it("should create array based on index-property", () => {
             const result = set({}, "/outer/[1]/value", 9);
             expect(result).to.deep.eq({ outer: [undefined, { value: 9 }] });
+        });
+
+        it("should insert array item based on index", () => {
+            const result = set({ outer: ["first"]}, "/outer/[0]/value", 9);
+            expect(result).to.deep.eq({ outer: [{ value: 9 }, "first"] });
         });
     });
 
