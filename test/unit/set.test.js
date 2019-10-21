@@ -22,6 +22,13 @@ describe("set", () => {
         expect(result).to.deep.eq({ outer: { side: true, inner: { value: 9 } }});
     });
 
+    it("should callback each value", () => {
+        const result = set({ outer: { side: true } }, "/outer/inner/value", (property, parent, parentPointer, pointer) => {
+            return pointer;
+        });
+        expect(result).to.deep.eq({ outer: { side: true, inner: { value: "#/outer/inner/value" } }});
+    });
+
 
     describe("array", () => {
 
