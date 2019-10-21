@@ -5,6 +5,16 @@ const split = require("../../lib/split");
 
 describe("split", () => {
 
+    it("should return array for missing input", () => {
+        const path = split();
+        expect(path).to.deep.eq([]);
+    });
+
+    it("should return array for empty string", () => {
+        const path = split("");
+        expect(path).to.deep.eq([]);
+    });
+
     it("should split simple pointer to list of properties", () => {
         const path = split("#/outer/inner/last");
         expect(path).to.deep.eq(["outer", "inner", "last"]);
