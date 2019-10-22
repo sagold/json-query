@@ -32,6 +32,11 @@ describe("set", () => {
 
     describe("array", () => {
 
+        it.only("should replace array item at specified position", () => {
+            const result = set({ list: [1,2,3] }, "/list/1", "t");
+            expect(result).to.deep.eq({ list: [1,"t",3] });
+        });
+
         it("should create array and append item", () => {
             const result = set({}, "/outer[]/[]/value", 9);
             expect(result).to.deep.eq({ outer: [{ value: 9 }] });
