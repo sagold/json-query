@@ -9,6 +9,9 @@ const set = require("../../lib/set");
     - insert array    /path/[1]/property    -> path[0, { property }, 1, ...]
     - replace array   /path/1/property      -> path[0, { property }, 2, ...]
         -> tests for index: isNaN(parseInt(property)) === false
+
+    ??? REPLACE ANY VALUES ON TARGETPATH (array replace...)
+    -> currently no values are replaced, but array items are replace or inserted. inconsistent?
  */
 describe("set", () => {
     // should return data on empty string
@@ -69,9 +72,19 @@ describe("set", () => {
             expect(result).to.deep.eq({ outer: [{ value: 9 }] });
         });
 
+        it("should append item", () => {
+            const result = set({ outer: [1,2] }, "/outer/[]/value", 9);
+            expect(result).to.deep.eq({ outer: [1,2,{ value: 9 }] });
+        });
+
         it("should create array based on property-type", () => {
             const result = set({}, "/outer/1/value", 9);
             expect(result).to.deep.eq({ outer: [undefined, { value: 9 }] });
+        });
+
+        it("should replace array item", () => {
+            const result = set({ outer: [1, 2, 3] }, "/outer/1/value", 9);
+            expect(result).to.deep.eq({ outer: [1, { value: 9 }, 3] });
         });
 
         it("should create array based on index-property", () => {
@@ -82,6 +95,26 @@ describe("set", () => {
         it("should insert array item based on index", () => {
             const result = set({ outer: ["first"]}, "/outer/[0]/value", 9);
             expect(result).to.deep.eq({ outer: [{ value: 9 }, "first"] });
+        });
+
+        it("should insert target with force=insert", () => {
+            const result = set({ list: [1,2,3]}, "/list/1", "t", set.INSERT_ITEMS);
+            expect(result).to.deep.eq({ list: [1,"t",2,3]});
+        });
+
+        it("should replace target with force=replace", () => {
+            const result = set({ list: [1,2,3]}, "/list/[1]", "t", set.REPLACE_ITEMS);
+            expect(result).to.deep.eq({ list: [1,"t",3]});
+        });
+
+        it("should insert with force=insert", () => {
+            const result = set({ list: [1,2,3]}, "/list/1/value", "t", set.INSERT_ITEMS);
+            expect(result).to.deep.eq({ list: [1,{ value: "t" },2,3]});
+        });
+
+        it("should replace with force=replace", () => {
+            const result = set({ list: [1,2,3]}, "/list/[1]/value", "t", set.REPLACE_ITEMS);
+            expect(result).to.deep.eq({ list: [1,{ value: "t" },3]});
         });
     });
 
