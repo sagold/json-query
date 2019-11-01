@@ -341,6 +341,30 @@ describe("get", () => {
             expect(cbMock.args.length).to.eq(4);
             expect(cbMock.args[3][0]).to.a.string;
         });
+
+        it("should support nested **", () => {
+            const data = {
+                a: {
+                    select: true,
+                    aa: {
+                        mark: { id: 1 }
+                    },
+                    ab: {
+                        mark: { id: 2 }
+                    }
+                },
+                b: {
+                    select: false,
+                    bb: {
+                        mark: { id: 3 }
+                    }
+                }
+            };
+            const result = get(data, "**?select:true/**/mark", get.POINTER);
+            expect(result.length).to.eq(2);
+            expect(result[0]).to.eq("#/a/aa/mark");
+            expect(result[1]).to.eq("#/a/ab/mark");
+        });
     });
 
 
