@@ -1,5 +1,6 @@
 /* eslint no-unused-vars: 0 */
 import { get, set, split, remove } from "../lib";
+import { default as queryGet } from "../lib/get";
 
 let result;
 
@@ -28,10 +29,14 @@ result = set(null, "", 42);
 
 const splitResult = split("(/a/b)+");
 
-result = remove([], "/a/b/*/d");
+const removeResult = remove([], "/a/b/*/d");
 // errors
 result = remove(undefined, "/a/b/*/d");
 result = remove(false, "/a/b/*/d");
+
+
+// direct imports
+queryGet({}, "**?id:true");
 
 
 
