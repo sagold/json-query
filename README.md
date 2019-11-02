@@ -175,7 +175,7 @@ split   | (query: string)                                                   | re
 remove  | (input:any, query: string, returnRemoved?:boolean)                | delete query targets, returns input
 
 
-**get**
+### get
 
 per default, *get* returns a list of all values
 
@@ -217,6 +217,8 @@ get(input, "/**?:value", (value, key, parent, pointer) => `custom-${pointer}`);
 ```
 
 
+### remove
+
 **remove** deletes any match from the input data.
 Note: the input will be modified. If this is unwanted behaviour, copy your data up front.
 
@@ -236,6 +238,8 @@ const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
 remove(input, "/object/*/id", true); // [ 33, "id-b" ]
 ```
 
+
+### set
 
 **set** inserts given input-value on result and creates missing properties and arrays.
 Note: Any expanding queries like `*` or patterns will not create any intermediate values
@@ -393,3 +397,5 @@ for further examples refer to the unit tests
 
 - [query.delete](https://github.com/sagold/json-query/blob/master/test/unit/delete.test.js)
 - [query.get](https://github.com/sagold/json-query/blob/master/test/unit/get.test.js)
+- [query.set](https://github.com/sagold/json-query/blob/master/test/unit/set.test.js)
+- [query.split](https://github.com/sagold/json-query/blob/master/test/unit/split.test.js)

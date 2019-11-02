@@ -1,13 +1,30 @@
 {
-    "root": true,
-    "extends": "eslint:recommended",
-    "env": {
-        "node": true
-    },
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module"
     },
+
+    "env": {
+        "es6": true,
+        "node": true
+    },
+
+    "settings": {
+        "node": {
+            "tryExtensions": [
+                ".js",
+                ".json",
+                ".ts"
+            ]
+        }
+    },
+
+    "extends": "eslint:recommended",
     "rules": {
         "semi": ["error", "always"],
         "prefer-const": "error",

@@ -3,6 +3,7 @@
   "version": "4.2.0",
   "description": "json-pointer utilities for querying and transforming data",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/sagold/gson-query.git"
@@ -24,11 +25,15 @@
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
+    "@types/node": "^12.12.4",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "eslint": "^6.4.0",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
+    "typescript": "^3.6.4",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "watch": "^1.0.1",
     "webpack": "^4.41.0",
