@@ -82,6 +82,11 @@ describe("set", () => {
             expect(result).to.deep.eq({ outer: [undefined, { value: 9 }] });
         });
 
+        it("should merge properties if types match", () => {
+            const result = set([{ index: "0" }, { index: "1" }, { index: "2" }], "/1/id", "t");
+            expect(result).to.deep.eq([{ index: "0" }, { index: "1", id: "t" }, { index: "2" }]);
+        });
+
         it("should replace array item", () => {
             const result = set({ outer: [1, 2, 3] }, "/outer/1/value", 9);
             expect(result).to.deep.eq({ outer: [1, { value: 9 }, 3] });
