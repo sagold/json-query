@@ -1,5 +1,5 @@
 const path = require("path");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin"); // eslint-disable-line
 
 
 const config = {
@@ -36,7 +36,7 @@ const config = {
     },
 
     optimization: {
-        minimizer: [new UglifyJsPlugin()]
+        minimizer: [new TerserPlugin()]
     }
 };
 
