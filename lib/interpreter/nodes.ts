@@ -1,6 +1,7 @@
 import o from "gson-conform";
 const join = (a, b) => `${a}/${b}`;
 import { VALUE_INDEX, POINTER_INDEX } from "./keys";
+import { IToken } from "ebnf";
 
 const toString = Object.prototype.toString;
 const rContainer = /Object|Array/;
@@ -30,14 +31,14 @@ const cache = {
 
 
 const expand = {
-    any(node, entry) {
+    any(node: IToken, entry) {
         const value = entry[VALUE_INDEX];
         return o.keys(value)
             // .map(prop => cache.get(entry, prop));
             .map(prop => [value[prop], prop, value, join(entry[POINTER_INDEX], prop)]);
     },
 
-    all(node, entry) {
+    all(node: IToken, entry) {
         const result = [entry];
         o.forEach(entry[VALUE_INDEX], (value, prop) => {
             const childEntry = cache.get(entry, prop);
@@ -47,7 +48,7 @@ const expand = {
         return result;
     },
 
-    regex(node, entry) {
+    regex(node: IToken, entry) {
         const regex = nodeAsRegex(node);
         const value = entry[VALUE_INDEX];
         return o.keys(value)
@@ -59,9 +60,9 @@ const expand = {
 
 const select = {
     // alias to property (but escaped)
-    escaped: (node, entry) => select.property(node, entry),
+    escaped: (node: IToken, entry) => select.property(node, entry),
 
-    property: (node, entry) => {
+    property: (node: IToken, entry) => {
         const prop = node.text;
         if (entry[VALUE_INDEX] && entry[VALUE_INDEX][prop] !== undefined) {
             return [
@@ -73,7 +74,7 @@ const select = {
         }
     },
 
-    typecheck: (node, entry) => {
+    typecheck: (node: IToken, entry) => {
         const checkedTyped = node.text.replace(/^\?:/, "");
         if (checkedTyped === "value") {
             return isContainer(entry[VALUE_INDEX]) ? undefined : entry;
@@ -85,7 +86,7 @@ const select = {
         }
     },
 
-    lookahead: (node, entry) => {
+    lookahead: (node: IToken, entry) => {
         let valid = true;
         let or = false;
         node.children.forEach(expr => {
@@ -99,7 +100,7 @@ const select = {
         return valid ? entry : undefined;
     },
 
-    expression: (node, entry) => {
+    expression: (node: IToken, entry) => {
         const prop = node.children[0].text;
         const cmp = node.children[1];
         const test = node.children[2];

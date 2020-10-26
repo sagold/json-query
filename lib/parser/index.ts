@@ -1,4 +1,5 @@
 import { default as EBNF } from "ebnf/dist/Grammars/W3CEBNF";
+import { IToken } from "ebnf";
 import enbf from "./grammar";
 
 const valid = /(children|text|type|start|end|rest|errors|fullText|\d+)/;
@@ -9,6 +10,6 @@ const toSmallJSON = (ast) => JSON.stringify(ast, (key, value) => (key === "" || 
 const parser = new EBNF.Parser(enbf);
 
 
-export const parse = (query) => parser.getAST(query);
-export const reduce = (ast) => JSON.parse(toSmallJSON(ast));
+export const parse = (query): IToken => parser.getAST(query);
+export const reduce = (ast: IToken) => JSON.parse(toSmallJSON(ast));
 export { toJSON };

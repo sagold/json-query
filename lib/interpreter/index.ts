@@ -1,11 +1,12 @@
 import { expand, select, cache } from "./nodes";
 import { VALUE_INDEX, KEY_INDEX, PARENT_INDEX, POINTER_INDEX } from "./keys";
 import { QueryResult, Input, JSONPointer } from "../types";
+import { IToken } from "ebnf";
 
 type WorkingSet = Array<QueryResult>;
 
 
-function collect(func, input: WorkingSet, node, pointer: JSONPointer) {
+function collect(func, input: WorkingSet, node: IToken, pointer: JSONPointer): WorkingSet {
     const result = [];
     for (let i = 0, l = input.length; i < l; i += 1) {
         result.push(...func(node, input[i], node, pointer));
@@ -14,7 +15,7 @@ function collect(func, input: WorkingSet, node, pointer: JSONPointer) {
 }
 
 
-function reduce(func, input, node, pointer: JSONPointer) {
+function reduce(func, input: WorkingSet, node: IToken, pointer: JSONPointer): WorkingSet {
     const result = [];
     for (let i = 0, l = input.length; i < l; i += 1) {
         const output = func(node, input[i], pointer);
@@ -26,7 +27,7 @@ function reduce(func, input, node, pointer: JSONPointer) {
 }
 
 
-function query(data: WorkingSet, ast, pointer: JSONPointer): WorkingSet {
+function query(data: WorkingSet, ast: IToken, pointer: JSONPointer): WorkingSet {
     let result = data;
     ast.children.forEach(node => {
         if (expand[node.type]) {
@@ -43,7 +44,7 @@ function query(data: WorkingSet, ast, pointer: JSONPointer): WorkingSet {
 }
 
 
-function runPatternOnce(inputSet: WorkingSet, ast, pointer: JSONPointer): WorkingSet {
+function runPatternOnce(inputSet: WorkingSet, ast: IToken, pointer: JSONPointer): WorkingSet {
     const resultingSet = [];
     let workingSet = inputSet;
     ast.children.forEach(node => {
@@ -58,7 +59,7 @@ function runPatternOnce(inputSet: WorkingSet, ast, pointer: JSONPointer): Workin
     return resultingSet;
 }
 
-function getIterationCount(quantifier?: string) {
+function getIterationCount(quantifier?: string): number {
     if (quantifier == null) {
         return 1; // default, simple group
     }
@@ -70,7 +71,7 @@ function getIterationCount(quantifier?: string) {
 }
 
 
-function pattern(data, ast, pointer: JSONPointer) {
+function pattern(data: WorkingSet, ast: IToken, pointer: JSONPointer): WorkingSet {
     const result = [];
     const quantifier = ast.children.find(node => node.type === "quantifier");
     const iterationCount = getIterationCount(quantifier && quantifier.text);
@@ -88,14 +89,14 @@ function pattern(data, ast, pointer: JSONPointer) {
 }
 
 
-function skip(data: WorkingSet, ast, pointer: JSONPointer) {
+function skip(data: WorkingSet, ast: IToken, pointer: JSONPointer): WorkingSet {
     let result = data;
     ast.children.forEach(n => (result = runNode(result, n, pointer)));
     return result;
 }
 
 
-function runNode(data: WorkingSet, ast, pointer?: JSONPointer): WorkingSet {
+function runNode(data: WorkingSet, ast: IToken, pointer?: JSONPointer): WorkingSet {
     let result;
     if (ast.type === "query") {
         result = query(data, ast, pointer);
@@ -111,7 +112,7 @@ function runNode(data: WorkingSet, ast, pointer?: JSONPointer): WorkingSet {
 }
 
 
-export default function run(data: Input, ast): Array<QueryResult> {
+export default function run(data: Input, ast: IToken): Array<QueryResult> {
     cache.reset();
     cache.mem.push(data);
     return runNode([[data, null, null, "#"]], ast);
