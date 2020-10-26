@@ -1,4 +1,4 @@
-/* eslint object-property-newline: 0 */
+/* eslint object-property-newline: "off", @typescript-eslint/ban-ts-comment: "off" */
 import "mocha";
 import { expect } from "chai";
 import get from "../../lib/get";

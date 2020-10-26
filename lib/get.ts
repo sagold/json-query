@@ -1,6 +1,6 @@
 import { parse } from "./parser";
 import { run, VALUE_INDEX, POINTER_INDEX } from "./interpreter";
-import { Input } from "./types";
+import { Input, JSONPointer, QueryResult } from "./types";
 
 
 const returnTypes = {
@@ -23,7 +23,9 @@ export enum ReturnType {
     MAP = "map"
 }
 
-export default function get(data: Input, queryString: string, returnType: ReturnType|Function = ReturnType.VALUE) {
+export type ResultCallback = (value: any, property: string|null, parent: { [p: string]: any }|Array<any>|null, pointer: JSONPointer) => any;
+
+export default function get(data: Input, queryString: string, returnType: ReturnType|ResultCallback = ReturnType.VALUE) {
     if (queryString == null) {
         return [];
     }
@@ -43,7 +45,7 @@ export default function get(data: Input, queryString: string, returnType: Return
 
     const result = run(data, ast);
     if (typeof returnType === "function") {
-        return result.map(r => returnType(...r));
+        return result.map((r: QueryResult) => returnType(...r));
     } else if (returnTypes[returnType]) {
         return returnTypes[returnType](result);
     }
