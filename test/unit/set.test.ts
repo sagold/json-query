@@ -1,6 +1,7 @@
 /* eslint object-property-newline: 0 */
-const { expect } = require("chai");
-const set = require("../../lib/set");
+import "mocha";
+import { expect } from "chai";
+import set, { InsertMode } from "../../lib/set";
 
 /*
     ??? Syntax
@@ -103,22 +104,22 @@ describe("set", () => {
         });
 
         it("should insert target with force=insert", () => {
-            const result = set({ list: [1,2,3]}, "/list/1", "t", set.INSERT_ITEMS);
+            const result = set({ list: [1,2,3]}, "/list/1", "t", InsertMode.INSERT_ITEMS);
             expect(result).to.deep.eq({ list: [1,"t",2,3]});
         });
 
         it("should replace target with force=replace", () => {
-            const result = set({ list: [1,2,3]}, "/list/[1]", "t", set.REPLACE_ITEMS);
+            const result = set({ list: [1,2,3]}, "/list/[1]", "t", InsertMode.REPLACE_ITEMS);
             expect(result).to.deep.eq({ list: [1,"t",3]});
         });
 
         it("should insert with force=insert", () => {
-            const result = set({ list: [1,2,3]}, "/list/1/value", "t", set.INSERT_ITEMS);
+            const result = set({ list: [1,2,3]}, "/list/1/value", "t", InsertMode.INSERT_ITEMS);
             expect(result).to.deep.eq({ list: [1,{ value: "t" },2,3]});
         });
 
         it("should replace with force=replace", () => {
-            const result = set({ list: [1,2,3]}, "/list/[1]/value", "t", set.REPLACE_ITEMS);
+            const result = set({ list: [1,2,3]}, "/list/[1]/value", "t", InsertMode.REPLACE_ITEMS);
             expect(result).to.deep.eq({ list: [1,{ value: "t" },3]});
         });
     });

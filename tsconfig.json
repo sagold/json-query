@@ -1,23 +1,22 @@
 {
-    "files": [
-        "lib/index.d.ts",
-        "test/test.ts"
-    ],
     "compilerOptions": {
-        "module": "commonjs",
-        "lib": [
-            "es6"
-        ],
-        "noImplicitAny": true,
-        "noImplicitThis": true,
-        "strictNullChecks": false,
-        "strictFunctionTypes": true,
-        "baseUrl": ".",
-        "typeRoots": [
-            "./lib"
-        ],
+        "declaration": false,
+        "outDir": "./dist/",
+        "module": "es2015",
+        "target": "es2015",
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "downlevelIteration": true,
+        "moduleResolution": "node",
+        "noImplicitAny": false,
         "types": [],
-        "noEmit": true,
-        "forceConsistentCasingInFileNames": true
-    }
+        "lib": [
+            "DOM",
+            "ES2018"
+        ]
+    },
+    "include": [
+        "lib/**/*"
+    ]
 }

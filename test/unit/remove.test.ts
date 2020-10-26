@@ -1,5 +1,6 @@
-const { expect } = require("chai");
-const { remove } = require("../../lib");
+import "mocha";
+import { expect } from "chai";
+import remove from "../../lib/remove";
 
 
 describe("remove", () => {

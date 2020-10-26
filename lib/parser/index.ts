@@ -1,5 +1,5 @@
-const { default: EBNF } = require("ebnf/dist/Grammars/W3CEBNF");
-const { enbf } = require("./grammar");
+import { default as EBNF } from "ebnf/dist/Grammars/W3CEBNF";
+import enbf from "./grammar";
 
 const valid = /(children|text|type|start|end|rest|errors|fullText|\d+)/;
 const subset = /(children|text|type|\d+)/;
@@ -9,8 +9,6 @@ const toSmallJSON = (ast) => JSON.stringify(ast, (key, value) => (key === "" || 
 const parser = new EBNF.Parser(enbf);
 
 
-module.exports = {
-    parse: (query) => parser.getAST(query),
-    reduce: (ast) => JSON.parse(toSmallJSON(ast)),
-    toJSON
-};
+export const parse = (query) => parser.getAST(query);
+export const reduce = (ast) => JSON.parse(toSmallJSON(ast));
+export { toJSON };

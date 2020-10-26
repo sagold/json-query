@@ -1,5 +1,6 @@
-const { expect } = require("chai");
-const { parse } = require("../../../lib/parser");
+import "mocha";
+import { expect } from "chai";
+import { parse } from "../../../lib/parser";
 
 
 describe("parser", () => {

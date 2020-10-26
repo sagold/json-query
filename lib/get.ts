@@ -1,5 +1,6 @@
-const { parse } = require("./parser");
-const { run, VALUE_INDEX, POINTER_INDEX } = require("./interpreter");
+import { parse } from "./parser";
+import { run, VALUE_INDEX, POINTER_INDEX } from "./interpreter";
+import { Input } from "./types";
 
 
 const returnTypes = {
@@ -15,7 +16,14 @@ const returnTypes = {
 
 Object.keys(returnTypes).forEach(prop => (get[prop.toUpperCase()] = prop));
 
-function get(data, queryString, returnType = "value") {
+export enum ReturnType {
+    POINTER = "pointer",
+    VALUE = "value",
+    ALL = "all",
+    MAP = "map"
+}
+
+export default function get(data: Input, queryString: string, returnType: ReturnType|Function = ReturnType.VALUE) {
     if (queryString == null) {
         return [];
     }
@@ -34,14 +42,11 @@ function get(data, queryString, returnType = "value") {
     }
 
     const result = run(data, ast);
-    if (returnTypes[returnType]) {
-        return returnTypes[returnType](result);
-    } else if (typeof returnType === "function") {
+    if (typeof returnType === "function") {
         return result.map(r => returnType(...r));
+    } else if (returnTypes[returnType]) {
+        return returnTypes[returnType](result);
     }
 
     return result;
 }
-
-
-module.exports = get;

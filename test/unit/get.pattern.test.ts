@@ -1,9 +1,10 @@
 /* eslint object-property-newline: 0 */
-const { expect } = require("chai");
-const get = require("../../lib/get");
+import "mocha";
+import { expect } from "chai";
+import get, { ReturnType } from "../../lib/get";
 
 
-describe("get.pattern", () => {
+describe("ReturnType.pattern", () => {
     let data;
     beforeEach(() => {
         data = {
@@ -164,25 +165,23 @@ describe("get.pattern", () => {
 
 
     describe("callback", () => {
-        const get = require("../../lib/get");
-
         it("should return values", () => {
-            const result = get(data, "(/a)+/value", get.VALUE);
+            const result = get(data, "(/a)+/value", ReturnType.VALUE);
             expect(result).to.deep.equal(["1", "2", "3", "4"]);
         });
 
         it("should return pointers", () => {
-            const result = get(data, "(/a)+/value", get.POINTER);
+            const result = get(data, "(/a)+/value", ReturnType.POINTER);
             expect(result).to.deep.equal(["#/a/value", "#/a/a/value", "#/a/a/a/value", "#/a/a/a/a/value"]);
         });
 
         it("should return pointers", () => {
-            const result = get(data, "(/a)+/value", get.POINTER);
+            const result = get(data, "(/a)+/value", ReturnType.POINTER);
             expect(result).to.deep.equal(["#/a/value", "#/a/a/value", "#/a/a/a/value", "#/a/a/a/a/value"]);
         });
 
         it("should return {pointer:value}", () => {
-            const result = get(data, "(/a)+/value", get.MAP);
+            const result = get(data, "(/a)+/value", ReturnType.MAP);
             expect(result).to.deep.equal({
                 "#/a/value": "1",
                 "#/a/a/value": "2",

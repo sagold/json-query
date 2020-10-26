@@ -1,6 +1,7 @@
 /* eslint object-property-newline: 0 */
-const { expect } = require("chai");
-const get = require("../../lib/get");
+import "mocha";
+import { expect } from "chai";
+import get from "../../lib/get";
 
 
 describe("get.filter", () => {
@@ -64,7 +65,8 @@ describe("get.filter", () => {
         expect(result.length).to.eq(0);
     });
 
-    it("should return empty array if no selector", () => {
+    it("should return empty array if no selector is given", () => {
+        // @ts-ignore
         const result = get(obj);
         expect(result.length).to.eq(0);
     });
@@ -164,6 +166,7 @@ describe("get.filter", () => {
             }, "*?type:!true||type:undefined");
 
             expect(result.length).to.eq(2);
+            // @ts-ignore
             expect(result[0]).to.deep.equal({}, { type: false });
         });
     });

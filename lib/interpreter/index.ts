@@ -1,5 +1,5 @@
-const { expand, select, cache } = require("./nodes");
-const { VALUE_INDEX, KEY_INDEX, PARENT_INDEX, POINTER_INDEX } = require("./keys");
+import { expand, select, cache } from "./nodes";
+import { VALUE_INDEX, KEY_INDEX, PARENT_INDEX, POINTER_INDEX } from "./keys";
 
 
 function collect(func, input, node, pointer) {
@@ -92,7 +92,7 @@ function skip(data, ast, pointer) {
 }
 
 
-function runNode(data, ast, pointer) {
+function runNode(data, ast, pointer?) {
     let result;
     if (ast.type === "query") {
         result = query(data, ast, pointer);
@@ -108,14 +108,10 @@ function runNode(data, ast, pointer) {
 }
 
 
-module.exports = {
-    VALUE_INDEX,
-    KEY_INDEX,
-    PARENT_INDEX,
-    POINTER_INDEX,
-    run(data, ast) {
-        cache.reset();
-        cache.mem.push(data);
-        return runNode([[data, null, null, "#"]], ast);
-    }
-};
+export default function run(data, ast) {
+    cache.reset();
+    cache.mem.push(data);
+    return runNode([[data, null, null, "#"]], ast);
+}
+
+export { run, VALUE_INDEX, KEY_INDEX, PARENT_INDEX, POINTER_INDEX };

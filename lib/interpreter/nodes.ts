@@ -1,6 +1,6 @@
-const o = require("gson-conform");
+import o from "gson-conform";
 const join = (a, b) => `${a}/${b}`;
-const { VALUE_INDEX, POINTER_INDEX } = require("./keys");
+import { VALUE_INDEX, POINTER_INDEX } from "./keys";
 
 const toString = Object.prototype.toString;
 const rContainer = /Object|Array/;
@@ -138,8 +138,4 @@ function expressionMatches(value, cmp, test) {
 }
 
 
-module.exports = {
-    expand,
-    select,
-    cache
-};
+export { expand, select, cache };

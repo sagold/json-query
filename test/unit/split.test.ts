@@ -1,6 +1,7 @@
 /* eslint object-property-newline: 0 */
-const { expect } = require("chai");
-const split = require("../../lib/split");
+import "mocha";
+import { expect } from "chai";
+import split from "../../lib/split";
 
 
 describe("split", () => {

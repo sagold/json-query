@@ -1,13 +1,10 @@
-const {
-    parse,
-    // toJSON
-} = require("./parser");
+import { parse } from "./parser";
 
 
 const skip = ["root", "recursion"];
 
 
-function buildPath(node, path = []) {
+function buildPath(node, path: Array<string> = []): Array<string> {
     if (skip.includes(node.type)) {
         node.children.forEach(n => buildPath(n, path));
         return path;
@@ -18,7 +15,7 @@ function buildPath(node, path = []) {
 }
 
 
-function split(queryString) {
+export default function split(queryString?: string): Array<string> {
     if (queryString == null || queryString === "") {
         return [];
     }
@@ -27,5 +24,3 @@ function split(queryString) {
     // console.log(toJSON(ast, null, 2));
     return buildPath(ast);
 }
-
-module.exports = split;

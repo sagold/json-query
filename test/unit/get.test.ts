@@ -1,7 +1,8 @@
 /* eslint object-property-newline: 0 */
-const { expect } = require("chai");
-const get = require("../../lib/get");
-const { parse } = require("../../lib/parser");
+import "mocha";
+import { expect } from "chai";
+import get, { ReturnType } from "../../lib/get";
+import { parse } from "../../lib/parser";
 
 
 describe("get", () => {
@@ -310,7 +311,7 @@ describe("get", () => {
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(3);
-            expect(cbMock.args[2][0]).to.a.string;
+            expect(cbMock.args[2][0]).to.be.string
         });
 
         it("should continue on matched globs", () => {
@@ -339,7 +340,7 @@ describe("get", () => {
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(4);
-            expect(cbMock.args[3][0]).to.a.string;
+            expect(cbMock.args[3][0]).to.be.string;
         });
 
         it("should support nested **", () => {
@@ -360,7 +361,8 @@ describe("get", () => {
                     }
                 }
             };
-            const result = get(data, "**?select:true/**/mark", get.POINTER);
+            // @ts-ignore
+            const result = get(data, "**?select:true/**/mark", ReturnType.POINTER);
             expect(result.length).to.eq(2);
             expect(result[0]).to.eq("#/a/aa/mark");
             expect(result[1]).to.eq("#/a/ab/mark");
@@ -457,8 +459,8 @@ describe("get", () => {
     describe("circular references", () => {
 
         it("should parse simple queries into circular references", () => {
-            const a = { id: "a" };
-            const b = { id: "b" };
+            const a = { id: "a", node: null };
+            const b = { id: "b", node: null };
             a.node = b;
             b.node = a;
 
@@ -468,8 +470,8 @@ describe("get", () => {
         });
 
         it("should not parse data twice for all operator", () => {
-            const a = { id: "a" };
-            const b = { id: "b" };
+            const a = { id: "a", node: null };
+            const b = { id: "b", node: null };
             a.node = b;
             b.node = a;
 
@@ -478,8 +480,8 @@ describe("get", () => {
         });
 
         it("should reset cache for next query", () => {
-            const a = { id: "a" };
-            const b = { id: "b" };
+            const a = { id: "a", node: null };
+            const b = { id: "b", node: null };
             a.node = b;
             b.node = a;
 
