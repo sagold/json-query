@@ -25,6 +25,13 @@ export enum ReturnType {
 
 export type ResultCallback = (value: any, property: string|null, parent: { [p: string]: any }|Array<any>|null, pointer: JSONPointer) => any;
 
+
+/**
+ * Runs query on input data and returns the results
+ * @param data - input data
+ * @param queryString - gson-query string
+ * @param returnType - result format or a custom callback
+ */
 export default function get(data: Input, queryString: string, returnType: ReturnType|ResultCallback = ReturnType.VALUE) {
     if (queryString == null) {
         return [];

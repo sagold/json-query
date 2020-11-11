@@ -105,6 +105,13 @@ export enum InsertMode {
 }
 
 
+/**
+ * Runs query on input data and assigns a value to query-results.
+ * @param data - input data
+ * @param queryString - gson-query string
+ * @param value - value to assign
+ * @param [force] - whether to replace or insert into arrays
+ */
 export default function set<T extends Input>(data: T, queryString: string, value: any, force?: InsertMode): T {
     if (queryString == null) {
         return cp(data);
