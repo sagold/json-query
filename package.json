@@ -2,18 +2,15 @@
   "name": "gson-query",
   "version": "4.4.1",
   "description": "json-pointer utilities for querying and transforming data",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/gsonQuery.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/sagold/gson-query.git"
   },
   "scripts": {
-    "dist": "rm -rf dist; webpack",
+    "dist": "rm -rf dist; NODE_ENV=production webpack",
     "test": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/**/*.test.ts'",
-    "test:get": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/get.test.ts'",
-    "test:set": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/set.test.ts'",
-    "test:pattern": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/get.pattern.test.ts'",
     "tdd": "watch 'npm run test' lib/ test/; exit 0",
     "lint": "eslint lib test",
     "prepublish": "npm run test & npm run lint & npm run dist",
@@ -23,7 +20,7 @@
   "dependencies": {
     "ebnf": "^1.9.0",
     "gson-conform": "^1.0.3",
-    "gson-pointer": "^3.4.3"
+    "gson-pointer": "4.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.14",
@@ -54,6 +51,6 @@
     "glob-pattern",
     "library"
   ],
-  "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
+  "author": "Sascha Goldhofer <git@saschagoldhofer.de> (https://github.com/sagold/)",
   "license": "MIT"
 }

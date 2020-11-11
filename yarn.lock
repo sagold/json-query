@@ -1515,10 +1515,10 @@ gson-conform@^1.0.3:
   resolved "https://registry.yarnpkg.com/gson-conform/-/gson-conform-1.0.3.tgz#6f982f98ea84199280bd48b6bfbcd0ae7447f1e2"
   integrity sha512-gaZQN/5ZbohkLBOs4JKHkg/IdOB9kuuEr5SVLAjHUs+Q+Nl746DRe18GgQy4oxxVXStO//Zga2wg4eWL9Mfshw==
 
-gson-pointer@^3.4.3:
-  version "3.4.3"
-  resolved "https://registry.npmjs.org/gson-pointer/-/gson-pointer-3.4.3.tgz#a3235083f3a2e3199ba0a422e8b019945a3a265f"
-  integrity sha512-qraHrd8Eqxop1zNRxfRWohdIikgsDB9QtfBptWhy6Pm8GnlQKNUnT4uQU6vieeSpIAFEK/uopOorq/kABssUKA==
+gson-pointer@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/gson-pointer/-/gson-pointer-4.1.0.tgz#a806169305b195df5204651190f74e7503d0a755"
+  integrity sha512-5k5iE+50brpPDMvc/SVIhKlA70QKRGrkMpm6PWqCRG3V29D/AI/0tX0UY0Zxs9lxI47iyN2S76xJGY/tL+JFQQ==
 
 has-flag@^3.0.0:
   version "3.0.0"
