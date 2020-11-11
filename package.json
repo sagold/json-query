@@ -52,8 +52,9 @@
     "json",
     "json-pointer",
     "glob-pattern",
-    "library"
+    "library",
+    "make my day"
   ],
-  "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
+  "author": "Sascha Goldhofer <github@saschagoldhofer.de> (https://github.com/sagold/)",
   "license": "MIT"
 }
