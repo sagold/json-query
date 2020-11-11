@@ -14,7 +14,6 @@ const returnTypes = {
     }
 };
 
-Object.keys(returnTypes).forEach(prop => (get[prop.toUpperCase()] = prop));
 
 export enum ReturnType {
     POINTER = "pointer",
@@ -23,7 +22,15 @@ export enum ReturnType {
     MAP = "map"
 }
 
+
 export type ResultCallback = (value: any, property: string|null, parent: { [p: string]: any }|Array<any>|null, pointer: JSONPointer) => any;
+
+
+// export return types on function
+get.POINTER = ReturnType.POINTER;
+get.VALUE = ReturnType.VALUE;
+get.ALL = ReturnType.ALL;
+get.MAP = ReturnType.MAP;
 
 
 /**

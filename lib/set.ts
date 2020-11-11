@@ -92,17 +92,17 @@ function create<T extends WorkingSet>(workingSet: T, query: string, keyIsArray: 
 }
 
 
-// for all array-indices within path, replace the values, ignoring insertion syntax /[1]/
-set.REPLACE_ITEMS = "replace";
-// for all array-indices within path, insert the values, ignoring replace syntax /1/
-set.INSERT_ITEMS = "insert";
-// set.MERGE_ITEMS = "merge";
-
-
 export enum InsertMode {
     REPLACE_ITEMS = "replace",
     INSERT_ITEMS = "insert"
 }
+
+
+// for all array-indices within path, replace the values, ignoring insertion syntax /[1]/
+set.REPLACE_ITEMS = InsertMode.REPLACE_ITEMS;
+// for all array-indices within path, insert the values, ignoring replace syntax /1/
+set.INSERT_ITEMS = InsertMode.INSERT_ITEMS;
+// set.MERGE_ITEMS = "merge";
 
 
 /**
