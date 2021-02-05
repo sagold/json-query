@@ -1,7 +1,8 @@
 /test/
-/build/
+/dev/
 /release/
 /docs/
+/test/
 /.nyc_output/
 
 *.sublime*
@@ -9,6 +10,7 @@
 .DS_Store
 Thumbs.db
 
+.*
 *.log
 *.dat
 *.out
