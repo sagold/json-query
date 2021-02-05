@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dist": "rm -rf dist; npm run dist:es5; npm run dist:es6",
-    "dist:es5": "webpack",
+    "dist:es5": "NODE_ENV='production' webpack",
     "dist:es6": "tsc --outDir dist/module --target ES2019",
     "test": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/**/*.test.ts'",
     "test:get": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/get.test.ts'",
