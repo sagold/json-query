@@ -1,6 +1,6 @@
 {
   "name": "gson-query",
-  "version": "4.4.1",
+  "version": "5.0.0",
   "description": "json-pointer utilities for querying and transforming data",
   "module": "dist/module/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,7 @@
   "dependencies": {
     "ebnf": "^1.9.0",
     "gson-conform": "^1.0.3",
-    "gson-pointer": "4.1.0"
+    "gson-pointer": "4.1.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.14",
