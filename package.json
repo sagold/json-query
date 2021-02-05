@@ -1,6 +1,6 @@
 {
   "name": "gson-query",
-  "version": "4.4.1",
+  "version": "5.0.0",
   "description": "json-pointer utilities for querying and transforming data",
   "module": "dist/module/index.js",
   "types": "dist/index.d.ts",
