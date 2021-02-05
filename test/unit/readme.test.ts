@@ -1,5 +1,6 @@
-const { expect } = require("chai");
-const get = require("../../lib/get");
+import "mocha";
+import { expect } from "chai";
+import get from "../../lib/get";
 
 
 describe("query", () => {

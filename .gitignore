@@ -1,8 +1,7 @@
-node_modules
-status.png
-build
-bower_components
-*.sublime-workspace
 *.sublime-project
-/.nyc_output
+*.sublime-workspace
 .DS_Store
+/.nyc_output
+/dev
+/node_modules
+/types

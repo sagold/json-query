@@ -1,34 +1,41 @@
-const path = require("path");
+const path = require("path"); // eslint-disable-line
 const TerserPlugin = require("terser-webpack-plugin"); // eslint-disable-line
+const PRODUCTION = process.env.NODE_ENV === "production";
 
 
 const config = {
-    entry: {
-        "gson-query": "./lib/index.js"
-    },
-    mode: "production",
+    entry: "./index.ts",
+    mode: PRODUCTION ? "production" : "development",
     context: __dirname,
     target: "web",
-    devtool: false,
+    devtool: PRODUCTION ? false : "source-map",
+    stats: { children: false },
     output: {
-        filename: "[name].js",
-        chunkFilename: "[name].bundle.js",
-        path: path.resolve(__dirname, "dist")
+        path: path.resolve(__dirname, PRODUCTION ? "dist" : "dev"),
+        filename: 'gsonQuery.js',
+        libraryTarget: 'umd',
+        library: 'gsonQuery',
+        umdNamedDefine: true,
+        globalObject: `(typeof self !== 'undefined' ? self : this)`
     },
 
     resolve: {
+        extensions: [".tsx", ".ts", ".js"],
         alias: {}
     },
 
     module: {
         rules: [
             {
-                test: /\.js$/,
-                // exclude: /(node_modules)/,
+                test: /\.tsx?$/,
                 use: {
-                    loader: "babel-loader",
+                    loader: "ts-loader",
                     options: {
-                        presets: ["@babel/preset-env"]
+                        configFile: path.resolve(__dirname, "tsconfig.json"),
+                        compilerOptions: {
+                            sourceMap: !PRODUCTION,
+                            declaration: PRODUCTION
+                        }
                     }
                 }
             }
@@ -39,5 +46,6 @@ const config = {
         minimizer: [new TerserPlugin()]
     }
 };
+
 
 module.exports = config;

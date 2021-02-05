@@ -1,16 +1,22 @@
 {
   "name": "gson-query",
-  "version": "4.4.1",
+  "version": "5.0.0",
   "description": "json-pointer utilities for querying and transforming data",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "module": "dist/module/index.js",
+  "types": "dist/index.d.ts",
+  "main": "dist/gsonQuery.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sagold/gson-query.git"
   },
   "scripts": {
-    "dist": "rm -rf dist; webpack",
-    "test": "mocha --recursive 'test/unit/**/*.test.js' -R spec; exit 0",
+    "dist": "rm -rf dist; npm run dist:es5; npm run dist:es6",
+    "dist:es5": "webpack",
+    "dist:es6": "tsc --outDir dist/module --target ES2019",
+    "test": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/**/*.test.ts'",
+    "test:get": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/get.test.ts'",
+    "test:set": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/set.test.ts'",
+    "test:pattern": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/get.pattern.test.ts'",
     "tdd": "watch 'npm run test' lib/ test/; exit 0",
     "lint": "eslint lib test",
     "prepublish": "npm run test & npm run lint & npm run dist",
@@ -20,32 +26,38 @@
   "dependencies": {
     "ebnf": "^1.9.0",
     "gson-conform": "^1.0.3",
-    "gson-pointer": "^3.4.3"
+    "gson-pointer": "4.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.0.3",
     "@types/node": "^14.14.2",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
-    "babel-loader": "^8.1.0",
     "chai": "^4.2.0",
-    "eslint": "^7.12.0",
-    "mocha": "^8.2.0",
+    "eslint": "^7.13.0",
+    "eslint-plugin-array-func": "^3.1.7",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-optimize-regex": "^1.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "mocha": "^8.2.1",
     "nyc": "^15.1.0",
     "terser-webpack-plugin": "^5.0.1",
-    "typescript": "^4.0.3",
+    "ts-loader": "^8.0.11",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.5",
     "watch": "^1.0.1",
-    "webpack": "^5.2.0",
-    "webpack-cli": "^4.1.0"
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.2.0"
   },
   "keywords": [
     "query",
     "json",
     "json-pointer",
     "glob-pattern",
-    "library"
+    "library",
+    "make my day"
   ],
-  "author": "Sascha Goldhofer <noreply@saschagoldhofer.de> (https://github.com/sagold/)",
+  "author": "Sascha Goldhofer <github@saschagoldhofer.de> (https://github.com/sagold/)",
   "license": "MIT"
 }

@@ -1,9 +1,9 @@
-const { propertyRegex } = require("./parser/grammar");
-const split = require("./split");
-const get = require("./get");
+import { propertyRegex } from "./parser/grammar";
+import { Input, QueryResult } from "./types";
+import split from "./split";
+import get, { ReturnType } from "./get";
 
-
-const cp = v => JSON.parse(JSON.stringify(v));
+const cp = <T>(v:T):T => JSON.parse(JSON.stringify(v));
 const toString = Object.prototype.toString;
 const getType = v => toString.call(v).match(/\s([^\]]+)\]/).pop().toLowerCase();
 const isProperty = new RegExp(`^("[^"]+"|${propertyRegex})$`);
@@ -14,16 +14,18 @@ const isEscaped = /^".+"$/;
 const isArrayProp = /(^\[\d*\]$|^\d+$)/;
 
 
-function convertToIndex(index) {
+type WorkingSet = Array<QueryResult>;
+
+
+function convertToIndex(index: string): number {
     return parseInt(index.replace(/^(\[|\]$)/, ""));
 }
 
-function removeEscape(property) {
+function removeEscape(property: string): string {
     return isEscaped.test(property) ? property.replace(/(^"|"$)/g, "") : property;
 }
 
-
-function insert(array, index, value) {
+function insert(array: Array<any>, index: number, value: any) {
     if (array.length <= index) {
         array[index] = value;
     } else {
@@ -31,14 +33,13 @@ function insert(array, index, value) {
     }
 }
 
-function select(workingSet, query) {
-    const nextSet = [];
-    workingSet.forEach(d => nextSet.push(...get(d[0], query, get.ALL)));
+function select<T extends WorkingSet>(workingSet: T, query: string): T {
+    const nextSet = [] as T;
+    workingSet.forEach(d => nextSet.push(...get(d[0], query, ReturnType.ALL)));
     return nextSet;
 }
 
-
-function addToArray(result, index, value, force) {
+function addToArray(result: QueryResult, index: string, value: any, force?: InsertMode) {
     const target = result[0];
 
     // append?
@@ -54,32 +55,32 @@ function addToArray(result, index, value, force) {
     }
 
     if (force === set.INSERT_ITEMS || (force == null && arrayHasIndex.test(index))) {
-        index = convertToIndex(index);
-        insert(target, index, value);
-        return [target[index], index, target, `${result[3]}/${index}}`];
+        const arrayIndex = convertToIndex(index);
+        insert(target, arrayIndex, value);
+        return [target[arrayIndex], arrayIndex, target, `${result[3]}/${arrayIndex}}`];
     }
 
     if (force === set.REPLACE_ITEMS || force == null) {
-        index = convertToIndex(index);
-        target[index] = value;
-        return [target[index], index, target, `${result[3]}/${index}}`];
+        const arrayIndex = convertToIndex(index);
+        target[arrayIndex] = value;
+        return [target[arrayIndex], arrayIndex, target, `${result[3]}/${arrayIndex}}`];
     }
 
     throw new Error(`Unknown array index '${index}' with force-option '${force}'`);
 }
 
 
-function create(workingSet, query, keyIsArray, force) {
+function create<T extends WorkingSet>(workingSet: T, query: string, keyIsArray: boolean, force?: InsertMode): T {
     query = removeEscape(query);
     return workingSet
-        .filter(o => {
+        .filter((o: QueryResult) => {
             // replacing or inserting array
             if (Array.isArray(o[0]) && isArrayProp.test(query)) {
                 return true;
             }
             return ignoreTypes.includes(getType(o[0][query])) === false;
         })
-        .map(r => {
+        .map((r: QueryResult) => {
             const container = keyIsArray ? [] : {};
             const o = r[0];
             if (Array.isArray(o)) {
@@ -87,18 +88,31 @@ function create(workingSet, query, keyIsArray, force) {
             }
             o[query] = o[query] || container;
             return [o[query], query, o, `${r[3]}/${query}`];
-        });
+        }) as T;
+}
+
+
+export enum InsertMode {
+    REPLACE_ITEMS = "replace",
+    INSERT_ITEMS = "insert"
 }
 
 
 // for all array-indices within path, replace the values, ignoring insertion syntax /[1]/
-set.REPLACE_ITEMS = "replace";
+set.REPLACE_ITEMS = InsertMode.REPLACE_ITEMS;
 // for all array-indices within path, insert the values, ignoring replace syntax /1/
-set.INSERT_ITEMS = "insert";
+set.INSERT_ITEMS = InsertMode.INSERT_ITEMS;
 // set.MERGE_ITEMS = "merge";
 
 
-function set(data, queryString, value, force) {
+/**
+ * Runs query on input data and assigns a value to query-results.
+ * @param data - input data
+ * @param queryString - gson-query string
+ * @param value - value to assign
+ * @param [force] - whether to replace or insert into arrays
+ */
+export default function set<T extends Input>(data: T, queryString: string, value: any, force?: InsertMode): T {
     if (queryString == null) {
         return cp(data);
     }
@@ -109,7 +123,7 @@ function set(data, queryString, value, force) {
     }
 
     const result = cp(data);
-    let workingSet = [[result, null, null, "#"]];
+    let workingSet: WorkingSet = [[result, null, null, "#"]];
     const path = split(queryString);
     const property = path.pop();
 
@@ -118,7 +132,7 @@ function set(data, queryString, value, force) {
         throw new Error(`Unsupported query '${queryString}' ending with non-property`);
     }
 
-    path.forEach((query, index) => {
+    path.forEach((query: string, index: number) => {
         if ("__proto__" === query || "prototyped" === query || "constructor" === query) {
             return;
         }
@@ -132,7 +146,7 @@ function set(data, queryString, value, force) {
         workingSet = create(workingSet, query, insertArray, force);
     });
 
-    workingSet.forEach(r => {
+    workingSet.forEach((r: QueryResult) => {
         let targetValue = value;
         if (getType(value) === "function") {
             targetValue = value(r[3], property, r[0], `${r[3]}/${property}`);
@@ -153,6 +167,3 @@ function set(data, queryString, value, force) {
 
     return result;
 }
-
-
-module.exports = set;

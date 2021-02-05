@@ -1,9 +1,9 @@
-const propertyRegex = "[^?/{}*,()#]+";
+export const propertyRegex = "[^?/{}*,()#]+";
 
 // W3C ENBF grammar
 // https://github.com/lys-lang/node-ebnf/blob/master/test/W3CEBNF.spec.ts
 // https://www.w3.org/TR/xml/#sec-notation
-const enbf = `
+export default `
 root ::= ("#" recursion | recursion | (query | pattern) recursion* | "#" SEP? | SEP)
 recursion ::= (SEP query | pattern)*
 
@@ -32,9 +32,3 @@ orPattern ::= S? "," S?
 
 S ::= [ ]*
 `;
-
-
-module.exports = {
-    enbf,
-    propertyRegex
-};

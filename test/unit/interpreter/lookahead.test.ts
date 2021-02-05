@@ -1,7 +1,8 @@
-const { expect } = require("chai");
-const { select } = require("../../../lib/interpreter/nodes");
-const { parse, reduce } = require("../../../lib/parser");
-const get = require("../../../lib/get");
+import "mocha";
+import { expect } from "chai";
+import get from "../../../lib/get";
+import { parse, reduce } from "../../../lib/parser";
+import { select } from "../../../lib/interpreter/nodes";
 const lookahead = select.lookahead;
 
 
