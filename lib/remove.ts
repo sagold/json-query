@@ -1,4 +1,3 @@
-import { remove } from "gson-pointer";
 import { remove, removeUndefinedItems } from "gson-pointer";
 import get, { ReturnType } from "./get";
 import { PARENT_INDEX, POINTER_INDEX } from "./interpreter/keys";
