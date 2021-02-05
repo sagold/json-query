@@ -2,14 +2,17 @@
   "name": "gson-query",
   "version": "4.4.1",
   "description": "json-pointer utilities for querying and transforming data",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "module": "dist/module/index.js",
+  "types": "dist/index.d.ts",
+  "main": "dist/gsonQuery.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sagold/gson-query.git"
   },
   "scripts": {
-    "dist": "rm -rf dist; webpack",
+    "dist": "rm -rf dist; npm run dist:es5; npm run dist:es6",
+    "dist:es5": "webpack",
+    "dist:es6": "tsc --outDir dist/module --target ES2019",
     "test": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/**/*.test.ts'",
     "test:get": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/get.test.ts'",
     "test:set": "TS_NODE_PROJECT=./test/tsconfig.json mocha -r ts-node/register 'test/unit/set.test.ts'",
