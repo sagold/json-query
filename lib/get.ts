@@ -14,7 +14,6 @@ const returnTypes = {
     }
 };
 
-Object.keys(returnTypes).forEach(prop => (get[prop.toUpperCase()] = prop));
 
 export enum ReturnType {
     POINTER = "pointer",
@@ -23,8 +22,23 @@ export enum ReturnType {
     MAP = "map"
 }
 
+
 export type ResultCallback = (value: any, property: string|null, parent: { [p: string]: any }|Array<any>|null, pointer: JSONPointer) => any;
 
+
+// export return types on function
+get.POINTER = ReturnType.POINTER;
+get.VALUE = ReturnType.VALUE;
+get.ALL = ReturnType.ALL;
+get.MAP = ReturnType.MAP;
+
+
+/**
+ * Runs query on input data and returns the results
+ * @param data - input data
+ * @param queryString - gson-query string
+ * @param returnType - result format or a custom callback
+ */
 export default function get(data: Input, queryString: string, returnType: ReturnType|ResultCallback = ReturnType.VALUE) {
     if (queryString == null) {
         return [];

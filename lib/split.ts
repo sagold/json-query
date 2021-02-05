@@ -15,6 +15,9 @@ function buildPath(node, path: Array<string> = []): Array<string> {
 }
 
 
+/**
+ * Returns queryString as a list of property-queries
+ */
 export default function split(queryString?: string): Array<string> {
     if (queryString == null || queryString === "") {
         return [];

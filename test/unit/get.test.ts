@@ -361,7 +361,7 @@ describe("get", () => {
                     }
                 }
             };
-            // @ts-ignore
+
             const result = get(data, "**?select:true/**/mark", ReturnType.POINTER);
             expect(result.length).to.eq(2);
             expect(result[0]).to.eq("#/a/aa/mark");
@@ -452,6 +452,36 @@ describe("get", () => {
 
             expect(result).to.have.length(1);
             expect(result).to.contain("custom-#/a/c/d");
+        });
+
+        it("should support pointer-return from get-function", () => {
+            const result = get({ a: {
+                    b: { stack: "needle" },
+                    c: { needle: "stack",
+                        d: { needle: "needle" }
+                    }
+                }},
+                "#/**/*?needle:needle",
+                get.POINTER
+            );
+
+            expect(result).to.have.length(1);
+            expect(result).to.contain("#/a/c/d");
+        });
+
+        it("should support value-return from get-function", () => {
+            const result = get({ a: {
+                    b: { stack: "needle" },
+                    c: { needle: "stack",
+                        d: { needle: "needle-d" }
+                    }
+                }},
+                "#/**/*?needle:needle-d/needle",
+                get.VALUE
+            );
+
+            expect(result).to.have.length(1);
+            expect(result).to.contain("needle-d");
         });
     });
 
