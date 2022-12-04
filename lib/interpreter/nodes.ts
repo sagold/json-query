@@ -1,4 +1,3 @@
-import o from "gson-conform";
 const join = (a, b) => `${a}/${b}`;
 import { VALUE_INDEX, POINTER_INDEX } from "./keys";
 import { IToken } from "ebnf";
