@@ -3,9 +3,14 @@ import { Input, QueryResult } from "./types";
 import split from "./split";
 import get, { ReturnType } from "./get";
 
-const cp = <T>(v:T):T => JSON.parse(JSON.stringify(v));
+const cp = <T>(v: T): T => JSON.parse(JSON.stringify(v));
 const toString = Object.prototype.toString;
-const getType = v => toString.call(v).match(/\s([^\]]+)\]/).pop().toLowerCase();
+const getType = (v) =>
+    toString
+        .call(v)
+        .match(/\s([^\]]+)\]/)
+        .pop()
+        .toLowerCase();
 const isProperty = new RegExp(`^("[^"]+"|${propertyRegex})$`);
 const ignoreTypes = ["string", "number", "boolean", "null"];
 const isArray = /^\[\d*\]$/;
@@ -13,16 +18,16 @@ const arrayHasIndex = /^\[(\d+)\]$/;
 const isEscaped = /^".+"$/;
 const isArrayProp = /(^\[\d*\]$|^\d+$)/;
 
-
 type WorkingSet = Array<QueryResult>;
-
 
 function convertToIndex(index: string): number {
     return parseInt(index.replace(/^(\[|\]$)/, ""));
 }
 
 function removeEscape(property: string): string {
-    return isEscaped.test(property) ? property.replace(/(^"|"$)/g, "") : property;
+    return isEscaped.test(property)
+        ? property.replace(/(^"|"$)/g, "")
+        : property;
 }
 
 function insert(array: Array<any>, index: number, value: any) {
@@ -35,11 +40,18 @@ function insert(array: Array<any>, index: number, value: any) {
 
 function select<T extends WorkingSet>(workingSet: T, query: string): T {
     const nextSet = [] as T;
-    workingSet.forEach(d => nextSet.push(...get(d[0], query, ReturnType.ALL)));
+    workingSet.forEach((d) =>
+        nextSet.push(...get(d[0], query, ReturnType.ALL))
+    );
     return nextSet;
 }
 
-function addToArray(result: QueryResult, index: string, value: any, force?: InsertMode) {
+function addToArray(
+    result: QueryResult,
+    index: string,
+    value: any,
+    force?: InsertMode
+) {
     const target = result[0];
 
     // append?
@@ -50,27 +62,50 @@ function addToArray(result: QueryResult, index: string, value: any, force?: Inse
     }
 
     // MERGE_ITEMS?
-    if (force == null && getType(target[index]) === "object" && getType(value) === "object") {
+    if (
+        force == null &&
+        getType(target[index]) === "object" &&
+        getType(value) === "object"
+    ) {
         return [target[index], index, target, `${result[3]}/${index}}`];
     }
 
-    if (force === set.INSERT_ITEMS || (force == null && arrayHasIndex.test(index))) {
+    if (
+        force === set.INSERT_ITEMS ||
+        (force == null && arrayHasIndex.test(index))
+    ) {
         const arrayIndex = convertToIndex(index);
         insert(target, arrayIndex, value);
-        return [target[arrayIndex], arrayIndex, target, `${result[3]}/${arrayIndex}}`];
+        return [
+            target[arrayIndex],
+            arrayIndex,
+            target,
+            `${result[3]}/${arrayIndex}}`,
+        ];
     }
 
     if (force === set.REPLACE_ITEMS || force == null) {
         const arrayIndex = convertToIndex(index);
         target[arrayIndex] = value;
-        return [target[arrayIndex], arrayIndex, target, `${result[3]}/${arrayIndex}}`];
+        return [
+            target[arrayIndex],
+            arrayIndex,
+            target,
+            `${result[3]}/${arrayIndex}}`,
+        ];
     }
 
-    throw new Error(`Unknown array index '${index}' with force-option '${force}'`);
+    throw new Error(
+        `Unknown array index '${index}' with force-option '${force}'`
+    );
 }
 
-
-function create<T extends WorkingSet>(workingSet: T, query: string, keyIsArray: boolean, force?: InsertMode): T {
+function create<T extends WorkingSet>(
+    workingSet: T,
+    query: string,
+    keyIsArray: boolean,
+    force?: InsertMode
+): T {
     query = removeEscape(query);
     return workingSet
         .filter((o: QueryResult) => {
@@ -91,12 +126,10 @@ function create<T extends WorkingSet>(workingSet: T, query: string, keyIsArray: 
         }) as T;
 }
 
-
 export enum InsertMode {
     REPLACE_ITEMS = "replace",
-    INSERT_ITEMS = "insert"
+    INSERT_ITEMS = "insert",
 }
-
 
 // for all array-indices within path, replace the values, ignoring insertion syntax /[1]/
 set.REPLACE_ITEMS = InsertMode.REPLACE_ITEMS;
@@ -104,15 +137,19 @@ set.REPLACE_ITEMS = InsertMode.REPLACE_ITEMS;
 set.INSERT_ITEMS = InsertMode.INSERT_ITEMS;
 // set.MERGE_ITEMS = "merge";
 
-
 /**
  * Runs query on input data and assigns a value to query-results.
  * @param data - input data
- * @param queryString - gson-query string
+ * @param queryString - json-query string
  * @param value - value to assign
  * @param [force] - whether to replace or insert into arrays
  */
-export default function set<T extends Input>(data: T, queryString: string, value: any, force?: InsertMode): T {
+export default function set<T extends Input>(
+    data: T,
+    queryString: string,
+    value: any,
+    force?: InsertMode
+): T {
     if (queryString == null) {
         return cp(data);
     }
@@ -127,13 +164,20 @@ export default function set<T extends Input>(data: T, queryString: string, value
     const path = split(queryString);
     const property = path.pop();
 
-    const arrayWithoutIndex = isArray.test(property) && arrayHasIndex.test(property) === false;
+    const arrayWithoutIndex =
+        isArray.test(property) && arrayHasIndex.test(property) === false;
     if (isProperty.test(property) === false || arrayWithoutIndex) {
-        throw new Error(`Unsupported query '${queryString}' ending with non-property`);
+        throw new Error(
+            `Unsupported query '${queryString}' ending with non-property`
+        );
     }
 
     path.forEach((query: string, index: number) => {
-        if ("__proto__" === query || "prototyped" === query || "constructor" === query) {
+        if (
+            "__proto__" === query ||
+            "prototyped" === query ||
+            "constructor" === query
+        ) {
             return;
         }
         if (isProperty.test(query) === false) {
@@ -155,10 +199,13 @@ export default function set<T extends Input>(data: T, queryString: string, value
         const d = r[0];
         if (Array.isArray(d)) {
             addToArray(r, property, targetValue, force);
-
         } else {
             const unescapedProp = removeEscape(property);
-            if ("__proto__" === unescapedProp || "prototyped" === unescapedProp || "constructor" === unescapedProp) {
+            if (
+                "__proto__" === unescapedProp ||
+                "prototyped" === unescapedProp ||
+                "constructor" === unescapedProp
+            ) {
                 return;
             }
             d[unescapedProp] = targetValue;

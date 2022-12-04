@@ -1,13 +1,13 @@
 {
-    "name": "gson-query",
+    "name": "@sagold/json-query",
     "version": "5.1.1",
     "description": "json-pointer utilities for querying and transforming data",
     "module": "dist/module/index.js",
     "types": "dist/index.d.ts",
-    "main": "dist/gsonQuery.js",
+    "main": "dist/jsonQuery.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/sagold/gson-query.git"
+        "url": "https://github.com/sagold/json-query.git"
     },
     "scripts": {
         "dist": "rm -rf dist; npm run dist:es5; npm run dist:es6",

@@ -2,29 +2,30 @@ import { parse } from "./parser";
 import { run, VALUE_INDEX, POINTER_INDEX } from "./interpreter";
 import { Input, JSONPointer, QueryResult } from "./types";
 
-
 const returnTypes = {
-    value: r => r.map(e => e[VALUE_INDEX]),
-    pointer: r => r.map(e => e[POINTER_INDEX]),
-    all: r => r,
-    map: r => {
+    value: (r) => r.map((e) => e[VALUE_INDEX]),
+    pointer: (r) => r.map((e) => e[POINTER_INDEX]),
+    all: (r) => r,
+    map: (r) => {
         const map = {};
-        r.forEach(e => (map[e[POINTER_INDEX]] = e[VALUE_INDEX]));
+        r.forEach((e) => (map[e[POINTER_INDEX]] = e[VALUE_INDEX]));
         return map;
-    }
+    },
 };
-
 
 export enum ReturnType {
     POINTER = "pointer",
     VALUE = "value",
     ALL = "all",
-    MAP = "map"
+    MAP = "map",
 }
 
-
-export type ResultCallback = (value: any, property: string|null, parent: { [p: string]: any }|Array<any>|null, pointer: JSONPointer) => any;
-
+export type ResultCallback = (
+    value: any,
+    property: string | null,
+    parent: { [p: string]: any } | Array<any> | null,
+    pointer: JSONPointer
+) => any;
 
 // export return types on function
 get.POINTER = ReturnType.POINTER;
@@ -32,14 +33,17 @@ get.VALUE = ReturnType.VALUE;
 get.ALL = ReturnType.ALL;
 get.MAP = ReturnType.MAP;
 
-
 /**
  * Runs query on input data and returns the results
  * @param data - input data
- * @param queryString - gson-query string
+ * @param queryString - json-query string
  * @param returnType - result format or a custom callback
  */
-export default function get(data: Input, queryString: string, returnType: ReturnType|ResultCallback = ReturnType.VALUE) {
+export default function get(
+    data: Input,
+    queryString: string,
+    returnType: ReturnType | ResultCallback = ReturnType.VALUE
+) {
     if (queryString == null) {
         return [];
     }

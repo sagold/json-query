@@ -5,7 +5,7 @@ import { PARENT_INDEX, POINTER_INDEX } from "./interpreter/keys";
 /**
  * Runs query on input data and removes matching properties from results
  * @param data - input data
- * @param queryString - gson-query string
+ * @param queryString - json-query string
  * @param [returnRemoved] - if true, will returned removed properties, else input-data is removed
  */
 export default function queryRemove(data, queryString, returnRemoved = false) {

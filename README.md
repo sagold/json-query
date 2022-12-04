@@ -1,10 +1,11 @@
-<h1 align="left"><img src="./docs/gson-query.png" width="256" alt="gson-query"></h1>
+<h1 align="left"><img src="./docs/json-query.png" width="256" alt="@sagold/json-query"></h1>
 
-**⚠️ package `gson-query` has moved to `@sagold/json-query`. Please change package source as `gson-query` will no longer be updated.**
+> `json-query` lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data
 
-> gson-query lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data
+install
 
-**npm package** `gson-query`. An es5-version is bundled at `dist/gson-query.js`. The command-line integration can be installed separately from [gson-query-cli](https://github.com/sagold/gson-query-cli).
+`yarn add @sagold/json-query`
+
 
 - [Features](#features)
 - [Introduction](#quick-introduction)
@@ -31,7 +32,7 @@
 Basically, a **query** is a json-pointer, which describes a path of properties into the json-data
 
 ```js
-import { get } from "gson-query";
+import { get } from "@sagold/json-query";
 const input = { object: { a: { id: "id-a" }, b: { id: "id-b" } } };
 
 const values = get(input, "/object/a/id"); // ["id-a"]
@@ -157,6 +158,7 @@ const values = get(input, "/(/a)+"); // [{ id: 2, a: { id: 3, a: 4 } }, { id: 3,
 
 ## Breaking Changes
 
+- with version `v5.0.0` package has been rename to `@sagold/json-query`
 - with version `v4.0.0` (2019/10/01)
     - the api has been simplified to methods `query.get` and `query.delete` (removed `run` and `pattern`)
 - with version `v3.0.0`
@@ -167,7 +169,7 @@ const values = get(input, "/(/a)+"); // [{ id: 2, a: { id: 3, a: 4 } }, { id: 3,
 
 ## API
 
-*gson-query* exposes `get`, `set`, `remove` and a `split`-helper
+*json-query* exposes `get`, `set`, `remove` and a `split`-helper
 
 method  | signature                                                         | description
 --------|-------------------------------------------------------------------|------------------------------
@@ -182,7 +184,7 @@ remove  | (input:any, query: string, returnRemoved?:boolean)                | de
 per default, *get* returns a list of all values
 
 ```js
-import { get } from "gson-query";
+import { get } from "@sagold/json-query";
 const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
 const values = get(input, "/**?:value"); // [33, "id-b"]
 ```
@@ -201,7 +203,7 @@ function    | callback with `(value, keyToValue, parentObject, jsonPointer) => {
 
 
 ```js
-import { get } from "gson-query";
+import { get } from "@sagold/json-query";
 const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
 
 get(input, "/**?:value", get.VALUE); // [33, "id-b"]
@@ -225,7 +227,7 @@ get(input, "/**?:value", (value, key, parent, pointer) => `custom-${pointer}`);
 Note: the input will be modified. If this is unwanted behaviour, copy your data up front.
 
 ```js
-import { remove } from "gson-query";
+import { remove } from "@sagold/json-query";
 const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
 
 remove(input, "/object/*/id"); // { object: { a: {}, b: {} } };
@@ -234,7 +236,7 @@ remove(input, "/object/*/id"); // { object: { a: {}, b: {} } };
 Per default, the input object is returned. Setting the optional argument `returnRemoved = true`, will return a list of the removed items
 
 ```js
-import { remove } from "gson-query";
+import { remove } from "@sagold/json-query";
 const input = { object: { a: { id: 33 }, b: { id: "id-b" } } };
 
 remove(input, "/object/*/id", true); // [ 33, "id-b" ]
@@ -262,7 +264,7 @@ value(pointerOfParent:string, lastPropertyName:string, parentObject:string, poin
 Create data from simple properties
 
 ```js
-import { set } from "gson-query";
+import { set } from "@sagold/json-query";
 
 const result = set({}, "/object/id", 42); // { object: { id: 42 }}
 ```
@@ -270,7 +272,7 @@ const result = set({}, "/object/id", 42); // { object: { id: 42 }}
 Add properties to multiple existing objects
 
 ```js
-import { set } from "gson-query";
+import { set } from "@sagold/json-query";
 
 const result = set({ list: [ { id: 1 }, { id: 2 } ] }, "/list/*/index", 42);
 // { list: [ { id: 1, index: 42 }, { id: 2, index: 42 } ] }
@@ -279,7 +281,7 @@ const result = set({ list: [ { id: 1 }, { id: 2 } ] }, "/list/*/index", 42);
 Or using a value-function
 
 ```js
-import { set } from "gson-query";
+import { set } from "@sagold/json-query";
 
 const result = set({ list: [ { id: 1 }, { id: 2 } ] }, "/list/*/index",
     ( _, _, parent) => `id-${parent.id}`
@@ -290,7 +292,7 @@ const result = set({ list: [ { id: 1 }, { id: 2 } ] }, "/list/*/index",
 Currently, `set` will not override simple values
 
 ```js
-import { set } from "gson-query";
+import { set } from "@sagold/json-query";
 
 const result = set({ value: 2 }, "/value/id", 3);
 // { value: 2 }
@@ -298,7 +300,7 @@ const result = set({ value: 2 }, "/value/id", 3);
 
 And queries will not add values to the data
 ```js
-import { set } from "gson-query";
+import { set } from "@sagold/json-query";
 
 const result = set({ a: { id: 2 } }, "((/a), (/b))/id", true);
 // { a: { id: true } }
