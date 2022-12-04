@@ -1,8 +1,7 @@
 /* eslint object-property-newline: "off", @typescript-eslint/ban-ts-comment: "off" */
 import "mocha";
 import { expect } from "chai";
-import get from "../../lib/get";
-
+import { get } from "../../lib/get";
 
 describe("get.filter", () => {
     let obj;
@@ -15,20 +14,17 @@ describe("get.filter", () => {
             third: [
                 { type: "inThird" },
                 { type: "secondInThird" },
-                { type: null }
+                { type: null },
             ],
-            id: "obj"
+            id: "obj",
         };
         arr = [
             { id: "first", type: true },
             { id: "second", type: true },
             {
                 id: "third",
-                values: [
-                    { type: "inThird" },
-                    { type: "secondInThird" }
-                ]
-            }
+                values: [{ type: "inThird" }, { type: "secondInThird" }],
+            },
         ];
     });
 
@@ -104,7 +100,6 @@ describe("get.filter", () => {
         expect(result.length).to.eq(2);
     });
 
-
     describe("test-value", () => {
         it("should treat numbers as strings", () => {
             const result = get({ a: { id: 1 }, b: { id: "1" } }, "*?id:1");
@@ -113,57 +108,71 @@ describe("get.filter", () => {
         });
 
         it("should support regex test-values", () => {
-            const result = get({ a: { id: "word" }, b: { id: "12" } }, "*?id:{\\d\\d}");
+            const result = get(
+                { a: { id: "word" }, b: { id: "12" } },
+                "*?id:{\\d\\d}"
+            );
             expect(result.length).to.eq(1);
             expect(result).to.deep.equal([{ id: "12" }]);
         });
 
         it("should support json-pointer in regex", () => {
-            const result = get({ a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } }, "*?$ref:{#/b-target}");
+            const result = get(
+                { a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } },
+                "*?$ref:{#/b-target}"
+            );
             expect(result.length).to.eq(1);
             expect(result).to.deep.equal([{ $ref: "#/b-target" }]);
         });
 
         it("should support json-pointer when escaped by quotes", () => {
-            const result = get({ a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } }, "*?$ref:\"#/b-target\"");
+            const result = get(
+                { a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } },
+                '*?$ref:"#/b-target"'
+            );
             expect(result.length).to.eq(1);
             expect(result).to.deep.equal([{ $ref: "#/b-target" }]);
         });
     });
 
-
     describe("or", () => {
-
         it("should return both filter targets", () => {
-            const result = get(obj, "#/third/*?type:inThird||type:secondInThird");
+            const result = get(
+                obj,
+                "#/third/*?type:inThird||type:secondInThird"
+            );
             expect(result.length).to.eq(2);
             expect(result).to.deep.equal([
                 { type: "inThird" },
-                { type: "secondInThird" }
+                { type: "secondInThird" },
             ]);
         });
     });
 
-
     describe("undefined", () => {
-
         it("should not match undefined properties for a negated value", () => {
-            const result = get({
-                a: {},
-                b: { type: false },
-                c: { type: true }
-            }, "*?type:!true");
+            const result = get(
+                {
+                    a: {},
+                    b: { type: false },
+                    c: { type: true },
+                },
+                "*?type:!true"
+            );
 
             expect(result.length).to.eq(1);
             expect(result[0]).to.deep.equal({ type: false });
         });
 
         it("should match undefined properties if explicitly stated", () => {
-            const result = get({
-                a: {},
-                b: { type: false },
-                c: { type: true }
-            }, "*?type:!true||type:undefined");
+            const result = get(
+                {
+                    a: {},
+                    b: { type: false },
+                    c: { type: true },
+                },
+                "*?type:!true||type:undefined"
+            );
 
             expect(result.length).to.eq(2);
             // @ts-ignore
@@ -171,9 +180,7 @@ describe("get.filter", () => {
         });
     });
 
-
     describe("array", () => {
-
         it("should query * in array", () => {
             const result = get(arr, "*?type:true");
             expect(result.length).to.eq(2);

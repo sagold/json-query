@@ -1,7 +1,7 @@
-import { propertyRegex } from "./parser/grammar";
+import { get, ReturnType } from "./get";
 import { Input, QueryResult } from "./types";
-import split from "./split";
-import get, { ReturnType } from "./get";
+import { propertyRegex } from "./parser/jsonQueryGrammar";
+import { split } from "./split";
 
 const cp = <T>(v: T): T => JSON.parse(JSON.stringify(v));
 const toString = Object.prototype.toString;
@@ -144,7 +144,7 @@ set.INSERT_ITEMS = InsertMode.INSERT_ITEMS;
  * @param value - value to assign
  * @param [force] - whether to replace or insert into arrays
  */
-export default function set<T extends Input>(
+export function set<T extends Input>(
     data: T,
     queryString: string,
     value: any,

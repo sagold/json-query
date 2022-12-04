@@ -1,6 +1,6 @@
 import { parse } from "./parser";
 import { run, VALUE_INDEX, POINTER_INDEX } from "./interpreter";
-import { Input, JSONPointer, QueryResult } from "./types";
+import { Input, JsonPointer, QueryResult } from "./types";
 
 const returnTypes = {
     value: (r) => r.map((e) => e[VALUE_INDEX]),
@@ -24,7 +24,7 @@ export type ResultCallback = (
     value: any,
     property: string | null,
     parent: { [p: string]: any } | Array<any> | null,
-    pointer: JSONPointer
+    pointer: JsonPointer
 ) => any;
 
 // export return types on function
@@ -39,7 +39,7 @@ get.MAP = ReturnType.MAP;
  * @param queryString - json-query string
  * @param returnType - result format or a custom callback
  */
-export default function get(
+export function get(
     data: Input,
     queryString: string,
     returnType: ReturnType | ResultCallback = ReturnType.VALUE

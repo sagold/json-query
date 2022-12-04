@@ -1,11 +1,9 @@
 /* eslint object-property-newline: 0 */
 import "mocha";
 import { expect } from "chai";
-import split from "../../lib/split";
-
+import { split } from "../../lib/split";
 
 describe("split", () => {
-
     it("should return array for missing input", () => {
         const path = split();
         expect(path).to.deep.eq([]);
@@ -38,7 +36,7 @@ describe("split", () => {
 
     it("should correctly split escaped property names", () => {
         const path = split('#/outer/"referencing/parent"/target');
-        expect(path).to.deep.eq(["outer", "\"referencing/parent\"", "target"]);
+        expect(path).to.deep.eq(["outer", '"referencing/parent"', "target"]);
     });
 
     it("should separate separate query types", () => {

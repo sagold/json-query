@@ -3,7 +3,7 @@ export const propertyRegex = "[^?/{}*,()#]+";
 // W3C ENBF grammar
 // https://github.com/lys-lang/node-ebnf/blob/master/test/W3CEBNF.spec.ts
 // https://www.w3.org/TR/xml/#sec-notation
-export default `
+export const jsonQueryGrammar = `
 root ::= ("#" recursion | recursion | (query | pattern) recursion* | "#" SEP? | SEP)
 recursion ::= (SEP query | pattern)*
 

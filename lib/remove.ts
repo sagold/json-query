@@ -1,5 +1,8 @@
-import { remove, removeUndefinedItems } from "@sagold/json-pointer";
-import get, { ReturnType } from "./get";
+import {
+    remove as removePointer,
+    removeUndefinedItems,
+} from "@sagold/json-pointer";
+import { get, ReturnType } from "./get";
 import { PARENT_INDEX, POINTER_INDEX } from "./interpreter/keys";
 
 /**
@@ -8,12 +11,12 @@ import { PARENT_INDEX, POINTER_INDEX } from "./interpreter/keys";
  * @param queryString - json-query string
  * @param [returnRemoved] - if true, will returned removed properties, else input-data is removed
  */
-export default function queryRemove(data, queryString, returnRemoved = false) {
+export function remove(data, queryString, returnRemoved = false) {
     const removed = [];
     const matches = get(data, queryString, ReturnType.ALL);
     matches.forEach(function (match) {
         removed.push(match[0]);
-        remove(data, match[POINTER_INDEX], true);
+        removePointer(data, match[POINTER_INDEX], true);
     });
     matches.forEach(function (match) {
         if (Array.isArray(match[PARENT_INDEX])) {

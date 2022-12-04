@@ -2,16 +2,18 @@ import "mocha";
 import { expect } from "chai";
 import { select } from "../../../lib/interpreter/nodes";
 import { parse, reduce } from "../../../lib/parser";
-import get from "../../../lib/get";
+import { get } from "../../../lib/get";
 
 const expr = select.expression;
-
 
 describe("expression", () => {
     function ast(queryString) {
         const data = reduce(parse(`*?${queryString}`));
         const expressions = get(data, "**?type:expression");
-        expect(expressions.length).to.eq(1, `expected helper-method to extract '${queryString}' from ast`);
+        expect(expressions.length).to.eq(
+            1,
+            `expected helper-method to extract '${queryString}' from ast`
+        );
         return expressions[0];
     }
 
@@ -61,21 +63,25 @@ describe("expression", () => {
     });
 
     describe("regex", () => {
-
         it("should support regex-tests", () => {
-            const result = expr(ast("value:{input$}"), [{ value: "any input" }]);
+            const result = expr(ast("value:{input$}"), [
+                { value: "any input" },
+            ]);
             expect(result).to.deep.equal([{ value: "any input" }]);
         });
 
         it("should negate regex-tests", () => {
-            const result = expr(ast("value:!{input$}"), [{ value: "any input" }]);
+            const result = expr(ast("value:!{input$}"), [
+                { value: "any input" },
+            ]);
             expect(result).to.be.undefined;
         });
 
         it("should positively negate regex-tests", () => {
-            const result = expr(ast("value:!{input$}"), [{ value: "any output" }]);
+            const result = expr(ast("value:!{input$}"), [
+                { value: "any output" },
+            ]);
             expect(result).to.deep.equal([{ value: "any output" }]);
         });
     });
 });
-

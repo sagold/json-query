@@ -1,10 +1,9 @@
 import "mocha";
 import { expect } from "chai";
-import get from "../../../lib/get";
+import { get } from "../../../lib/get";
 import { parse, reduce } from "../../../lib/parser";
 import { select } from "../../../lib/interpreter/nodes";
 const lookahead = select.lookahead;
-
 
 describe("lookahead", () => {
     function asNode(query) {
@@ -19,22 +18,31 @@ describe("lookahead", () => {
     });
 
     it("should tests multiple properties", () => {
-        const result = lookahead(asNode("type:var&&init:false"), [{ type: "var", init: false }]);
+        const result = lookahead(asNode("type:var&&init:false"), [
+            { type: "var", init: false },
+        ]);
         expect(result).to.deep.eq([{ type: "var", init: false }]);
     });
 
     it("should negate comparison on leading !", () => {
-        const result = lookahead(asNode("init:!true&&type:!funny"), [{ type: true, init: false }]);
+        const result = lookahead(asNode("init:!true&&type:!funny"), [
+            { type: true, init: false },
+        ]);
         expect(result).to.deep.eq([{ type: true, init: false }]);
     });
 
     it("should return undefined if a single match fails", () => {
-        const result = lookahead(asNode("type:var&&init:false&&init:!false"), [{ type: "var", init: false }]);
+        const result = lookahead(asNode("type:var&&init:false&&init:!false"), [
+            { type: "var", init: false },
+        ]);
         expect(result).to.be.undefined;
     });
 
     it("should support or operator", () => {
-        const result = lookahead(asNode("value:false||init:undefined||init:!undefined"), [{ value: true }]);
+        const result = lookahead(
+            asNode("value:false||init:undefined||init:!undefined"),
+            [{ value: true }]
+        );
         expect(result).to.deep.eq([{ value: true }]);
     });
 });

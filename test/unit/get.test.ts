@@ -1,9 +1,8 @@
 /* eslint object-property-newline: "off", @typescript-eslint/ban-ts-comment: "off" */
 import "mocha";
 import { expect } from "chai";
-import get, { ReturnType } from "../../lib/get";
+import { get, ReturnType } from "../../lib/get";
 import { parse } from "../../lib/parser";
-
 
 describe("get", () => {
     let cbMock;
@@ -19,8 +18,12 @@ describe("get", () => {
     });
 
     it("should throw an error for a invalid query", () => {
-        expect(() => get({}, "query//woot")).to.throw(Error)
-            .with.property("message", "Failed parsing queryString from: '//woot'");
+        expect(() => get({}, "query//woot"))
+            .to.throw(Error)
+            .with.property(
+                "message",
+                "Failed parsing queryString from: '//woot'"
+            );
     });
 
     it("should return empty array", () => {
@@ -34,15 +37,19 @@ describe("get", () => {
         const result = get({ a: { "b:c": 42 } }, "#/a/b:c");
 
         expect(result).to.be.an("array");
-        expect(result).to.deep.eq([ 42 ]);
+        expect(result).to.deep.eq([42]);
     });
 
     it("should callback for matched jsonpointer", () => {
-        get({
-            first: {
-                value: "text"
-            }
-        }, "/first", cbMock);
+        get(
+            {
+                first: {
+                    value: "text",
+                },
+            },
+            "/first",
+            cbMock
+        );
 
         expect(cbMock.called).to.be.true;
         expect(cbMock.args.length).to.eq(1);
@@ -50,11 +57,15 @@ describe("get", () => {
     });
 
     it("should ignore trailing slashes", () => {
-        get({
-            first: {
-                value: "text"
-            }
-        }, "/first/", cbMock);
+        get(
+            {
+                first: {
+                    value: "text",
+                },
+            },
+            "/first/",
+            cbMock
+        );
 
         expect(cbMock.called).to.be.true;
         expect(cbMock.args.length).to.eq(1);
@@ -92,11 +103,15 @@ describe("get", () => {
     });
 
     it("should callback with value, key, object and pointer", () => {
-        get({
-            first: {
-                value: "text"
-            }
-        }, "/first", cbMock);
+        get(
+            {
+                first: {
+                    value: "text",
+                },
+            },
+            "/first",
+            cbMock
+        );
 
         expect(cbMock.args[0][0].value).to.eq("text");
         expect(cbMock.args[0][1]).to.eq("first");
@@ -105,11 +120,15 @@ describe("get", () => {
     });
 
     it("should callback on nested objects", () => {
-        get({
-            first: {
-                value: "text"
-            }
-        }, "/first/value", cbMock);
+        get(
+            {
+                first: {
+                    value: "text",
+                },
+            },
+            "/first/value",
+            cbMock
+        );
 
         expect(cbMock.args.length).to.eq(1);
         expect(cbMock.args[0][0]).to.eq("text");
@@ -117,26 +136,32 @@ describe("get", () => {
     });
 
     it("should callback only if match", () => {
-        get({
-            first: {
-                value: "text"
-            }
-        }, "/first/second", cbMock);
+        get(
+            {
+                first: {
+                    value: "text",
+                },
+            },
+            "/first/second",
+            cbMock
+        );
 
         expect(cbMock.called).to.be.false;
         expect(cbMock.args.length).to.eq(0);
     });
 
-
     describe("*", () => {
-
         it("should callback on all items", () => {
-            get({
-                first: {
-                    value: "text"
+            get(
+                {
+                    first: {
+                        value: "text",
+                    },
+                    second: "last",
                 },
-                second: "last"
-            }, "/*", cbMock);
+                "/*",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(2);
@@ -145,18 +170,21 @@ describe("get", () => {
         });
 
         it("should continue for all found items", () => {
-            get({
-                first: {
-                    value: "first"
+            get(
+                {
+                    first: {
+                        value: "first",
+                    },
+                    second: {
+                        value: "second",
+                    },
+                    third: {
+                        value: "third",
+                    },
                 },
-                second: {
-                    value: "second"
-                },
-                third: {
-                    value: "third"
-                }
-
-            }, "/*/value", cbMock);
+                "/*/value",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(3);
@@ -165,18 +193,20 @@ describe("get", () => {
         });
     });
 
-
     describe("filter", () => {
-
         it("should callback on matched items", () => {
-            get({
-                first: {
-                    value: "text"
+            get(
+                {
+                    first: {
+                        value: "text",
+                    },
+                    second: {
+                        value: "last",
+                    },
                 },
-                second: {
-                    value: "last"
-                }
-            }, "/*?value:last", cbMock);
+                "/*?value:last",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(1);
@@ -188,7 +218,9 @@ describe("get", () => {
         // now, only strings are valid as a pointer or else they are ignored
         it("should return arrays' objects using look ahead", () => {
             const calls = [];
-            get({ list: [1, { remove: true }, { remove: true }, 2] }, "#/list/*?remove:true",
+            get(
+                { list: [1, { remove: true }, { remove: true }, 2] },
+                "#/list/*?remove:true",
                 (value, key, object, pointer) => calls.push({ value, pointer })
             );
 
@@ -199,14 +231,18 @@ describe("get", () => {
         });
 
         it("should continue after query", () => {
-            get({
-                first: {
-                    value: "text"
+            get(
+                {
+                    first: {
+                        value: "text",
+                    },
+                    second: {
+                        value: "last",
+                    },
                 },
-                second: {
-                    value: "last"
-                }
-            }, "/*?value:last/value", cbMock);
+                "/*?value:last/value",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(1);
@@ -222,53 +258,64 @@ describe("get", () => {
         });
     });
 
-
     describe("escaping quotes", () => {
-
         it("should escape property in quotes", () => {
-            const result = get({ "{a/b)": { "#c/d?": "..." } }, '"{a/b)"/"#c/d?"');
+            const result = get(
+                { "{a/b)": { "#c/d?": "..." } },
+                '"{a/b)"/"#c/d?"'
+            );
 
             expect(result.length).to.eq(1);
             expect(result).to.deep.equal(["..."]);
         });
 
         it("should escape query-property in quotes", () => {
-            const result = get({ a: { "#/id/x": 1 }, b: { "#/id/x": 2 } }, "*?\"#/id/x\"");
+            const result = get(
+                { a: { "#/id/x": 1 }, b: { "#/id/x": 2 } },
+                '*?"#/id/x"'
+            );
 
             expect(result.length).to.eq(2);
             expect(result).to.deep.equal([{ "#/id/x": 1 }, { "#/id/x": 2 }]);
         });
 
         it("should escape property in quotes", () => {
-            const result = get({ "{a/b)": { "#c/d?": "..." } }, '"{a/b)"/"#c/d?"');
+            const result = get(
+                { "{a/b)": { "#c/d?": "..." } },
+                '"{a/b)"/"#c/d?"'
+            );
 
             expect(result.length).to.eq(1);
             expect(result).to.deep.equal(["..."]);
         });
 
         it("should escape test-value in quotes", () => {
-            const result = get({ a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } }, "*?$ref:\"#/b-target\"");
+            const result = get(
+                { a: { $ref: "#/a-target" }, b: { $ref: "#/b-target" } },
+                '*?$ref:"#/b-target"'
+            );
             expect(result.length).to.eq(1);
             expect(result).to.deep.equal([{ $ref: "#/b-target" }]);
         });
     });
 
-
     describe("**", () => {
-
         it("should callback on all keys", () => {
-            get({
-                "1": {
-                    value: "2",
-                    "3": {
-                        value: "4"
-                    }
+            get(
+                {
+                    "1": {
+                        value: "2",
+                        "3": {
+                            value: "4",
+                        },
+                    },
+                    "5": {
+                        value: "6",
+                    },
                 },
-                "5": {
-                    value: "6"
-                }
-
-            }, "/**/*", cbMock);
+                "/**/*",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(6);
@@ -277,18 +324,21 @@ describe("get", () => {
 
         // no root is added -> result += 1
         it("should callback on all keys, even without /*", () => {
-            get({
-                "1": {
-                    value: "2",
-                    "3": {
-                        value: "4"
-                    }
+            get(
+                {
+                    "1": {
+                        value: "2",
+                        "3": {
+                            value: "4",
+                        },
+                    },
+                    "5": {
+                        value: "6",
+                    },
                 },
-                "5": {
-                    value: "6"
-                }
-
-            }, "/**", cbMock);
+                "/**",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(7);
@@ -296,47 +346,54 @@ describe("get", () => {
         });
 
         it("should callback on all matched keys", () => {
-            get({
-                first: {
-                    value: "text",
-                    inner: {
-                        value: ""
-                    }
+            get(
+                {
+                    first: {
+                        value: "text",
+                        inner: {
+                            value: "",
+                        },
+                    },
+                    second: {
+                        value: "last",
+                    },
                 },
-                second: {
-                    value: "last"
-                }
-
-            }, "/**?value:!undefined", cbMock);
+                "/**?value:!undefined",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(3);
-            expect(cbMock.args[2][0]).to.be.string
+            expect(cbMock.args[2][0]).to.be.string;
         });
 
         it("should continue on matched globs", () => {
-            get({
-                a: {
-                    id: "a",
-                    needle: "needle"
+            get(
+                {
+                    a: {
+                        id: "a",
+                        needle: "needle",
+                    },
+                    b: {
+                        id: "b",
+                        needle: "needle",
+                        d: {
+                            id: "d",
+                            needle: "needle",
+                        },
+                    },
+                    c: {
+                        e: {
+                            f: {
+                                id: "f",
+                                needle: "needle",
+                            },
+                        },
+                    },
                 },
-                b: {
-                    id: "b",
-                    needle: "needle",
-                    d: {
-                        id: "d",
-                        needle: "needle"
-                    }
-                },
-                c: {
-                    e: {
-                        f: {
-                            id: "f",
-                            needle: "needle"
-                        }
-                    }
-                }
-            }, "#/**/*?needle:needle", cbMock);
+                "#/**/*?needle:needle",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(4);
@@ -348,37 +405,43 @@ describe("get", () => {
                 a: {
                     select: true,
                     aa: {
-                        mark: { id: 1 }
+                        mark: { id: 1 },
                     },
                     ab: {
-                        mark: { id: 2 }
-                    }
+                        mark: { id: 2 },
+                    },
                 },
                 b: {
                     select: false,
                     bb: {
-                        mark: { id: 3 }
-                    }
-                }
+                        mark: { id: 3 },
+                    },
+                },
             };
 
-            const result = get(data, "**?select:true/**/mark", ReturnType.POINTER);
+            const result = get(
+                data,
+                "**?select:true/**/mark",
+                ReturnType.POINTER
+            );
             expect(result.length).to.eq(2);
             expect(result[0]).to.eq("#/a/aa/mark");
             expect(result[1]).to.eq("#/a/ab/mark");
         });
     });
 
-
     describe("regex", () => {
-
         it("should apply {...} as regex on property names", () => {
-            get({
-                a1: true,
-                b1: false,
-                a2: true,
-                b2: false
-            }, "#/{a.*}", cbMock);
+            get(
+                {
+                    a1: true,
+                    b1: false,
+                    a2: true,
+                    b2: false,
+                },
+                "#/{a.*}",
+                cbMock
+            );
 
             expect(cbMock.called).to.be.true;
             expect(cbMock.args.length).to.eq(2);
@@ -387,21 +450,19 @@ describe("get", () => {
         });
     });
 
-
     describe("typecheck", () => {
         let input;
-        beforeEach(() => input = {
-            a: "string",
-            b: true,
-            c: {},
-            d: [],
-            e: 144,
-            list: [
-                false,
-                { id: "message" },
-                42
-            ]
-        });
+        beforeEach(
+            () =>
+                (input = {
+                    a: "string",
+                    b: true,
+                    c: {},
+                    d: [],
+                    e: 144,
+                    list: [false, { id: "message" }, 42],
+                })
+        );
 
         it("should support typechecks", () => {
             const result = get(input, "/**?:string");
@@ -425,25 +486,31 @@ describe("get", () => {
 
         it("should return arrays", () => {
             const result = get(input, "/**?:array");
-            expect(result).to.deep.equal([[], [false, { id: "message" }, 42 ]]);
+            expect(result).to.deep.equal([[], [false, { id: "message" }, 42]]);
         });
 
         it("should return non-object and non-arrays", () => {
             const result = get(input, "/**?:value");
-            expect(result).to.deep.equal(["string", true, 144, false, "message", 42]);
+            expect(result).to.deep.equal([
+                "string",
+                true,
+                144,
+                false,
+                "message",
+                42,
+            ]);
         });
     });
 
-
     describe("callback", () => {
-
         it("should return custom functions return values", () => {
-            const result = get({ a: {
-                    b: { stack: "needle" },
-                    c: { needle: "stack",
-                        d: { needle: "needle" }
-                    }
-                }},
+            const result = get(
+                {
+                    a: {
+                        b: { stack: "needle" },
+                        c: { needle: "stack", d: { needle: "needle" } },
+                    },
+                },
                 "#/**/*?needle:needle",
                 (val, key, parent, pointer) => {
                     return `custom-${pointer}`;
@@ -455,12 +522,13 @@ describe("get", () => {
         });
 
         it("should support pointer-return from get-function", () => {
-            const result = get({ a: {
-                    b: { stack: "needle" },
-                    c: { needle: "stack",
-                        d: { needle: "needle" }
-                    }
-                }},
+            const result = get(
+                {
+                    a: {
+                        b: { stack: "needle" },
+                        c: { needle: "stack", d: { needle: "needle" } },
+                    },
+                },
                 "#/**/*?needle:needle",
                 get.POINTER
             );
@@ -470,12 +538,13 @@ describe("get", () => {
         });
 
         it("should support value-return from get-function", () => {
-            const result = get({ a: {
-                    b: { stack: "needle" },
-                    c: { needle: "stack",
-                        d: { needle: "needle-d" }
-                    }
-                }},
+            const result = get(
+                {
+                    a: {
+                        b: { stack: "needle" },
+                        c: { needle: "stack", d: { needle: "needle-d" } },
+                    },
+                },
                 "#/**/*?needle:needle-d/needle",
                 get.VALUE
             );
@@ -485,9 +554,7 @@ describe("get", () => {
         });
     });
 
-
     describe("circular references", () => {
-
         it("should parse simple queries into circular references", () => {
             const a = { id: "a", node: null };
             const b = { id: "b", node: null };
@@ -516,10 +583,16 @@ describe("get", () => {
             b.node = a;
 
             const first = get(a, "/**/id");
-            expect(first).to.have.length(2, "expected first run to have 2 matches");
+            expect(first).to.have.length(
+                2,
+                "expected first run to have 2 matches"
+            );
 
             const second = get(a, "/**/id");
-            expect(second).to.have.length(2, "expected second run to have 2 matches");
+            expect(second).to.have.length(
+                2,
+                "expected second run to have 2 matches"
+            );
         });
 
         it("should finish parsing circular ast", () => {

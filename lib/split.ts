@@ -1,12 +1,10 @@
 import { parse } from "./parser";
 
-
 const skip = ["root", "recursion"];
-
 
 function buildPath(node, path: Array<string> = []): Array<string> {
     if (skip.includes(node.type)) {
-        node.children.forEach(n => buildPath(n, path));
+        node.children.forEach((n) => buildPath(n, path));
         return path;
     }
     // remove escaped property quotes?
@@ -14,11 +12,10 @@ function buildPath(node, path: Array<string> = []): Array<string> {
     return path;
 }
 
-
 /**
  * Returns queryString as a list of property-queries
  */
-export default function split(queryString?: string): Array<string> {
+export function split(queryString?: string): Array<string> {
     if (queryString == null || queryString === "") {
         return [];
     }

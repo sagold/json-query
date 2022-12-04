@@ -1,34 +1,32 @@
 import "mocha";
 import { expect } from "chai";
-import remove from "../../lib/remove";
-
+import { remove } from "../../lib/remove";
 
 describe("remove", () => {
-
     let data;
 
     beforeEach(() => {
         data = {
             a: {
                 id: "a",
-                needle: "needle"
+                needle: "needle",
             },
             b: {
                 id: "b",
                 needle: "needle",
                 d: {
                     id: "d",
-                    needle: "needle"
-                }
+                    needle: "needle",
+                },
             },
             c: {
                 e: {
                     f: {
                         id: "f",
-                        needle: "needle"
-                    }
-                }
-            }
+                        needle: "needle",
+                    },
+                },
+            },
         };
     });
 
@@ -39,7 +37,6 @@ describe("remove", () => {
         expect(data.b.d.needle).to.be.undefined;
         expect(data.c.e.f.needle).to.be.undefined;
         expect(removed).to.deep.eq(["needle", "needle", "needle", "needle"]);
-
     });
 
     it("should delete any matches supporting filters", () => {
@@ -51,7 +48,7 @@ describe("remove", () => {
             { id: "a", needle: "needle" },
             { id: "b", needle: "needle", d: { id: "d", needle: "needle" } },
             { id: "d", needle: "needle" },
-            { id: "f", needle: "needle" }
+            { id: "f", needle: "needle" },
         ]);
     });
 
