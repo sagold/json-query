@@ -5,9 +5,9 @@ declare const cache: {
     reset(): void;
 };
 declare const expand: {
-    any(node: IToken, entry: any): any;
+    any(node: IToken, entry: any): any[][];
     all(node: IToken, entry: any): any[];
-    regex(node: IToken, entry: any): any;
+    regex(node: IToken, entry: any): any[][];
 };
 declare const select: {
     escaped: (node: IToken, entry: any) => any[];

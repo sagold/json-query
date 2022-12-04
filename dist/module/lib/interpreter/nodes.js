@@ -1,12 +1,46 @@
-import o from "gson-conform";
 const join = (a, b) => `${a}/${b}`;
 import { VALUE_INDEX, POINTER_INDEX } from "./keys";
 const toString = Object.prototype.toString;
 const rContainer = /Object|Array/;
-const isContainer = v => rContainer.test(toString.call(v));
-const getTypeOf = v => toString.call(v).match(/\s([^\]]+)\]/).pop().toLowerCase();
+const isContainer = (v) => rContainer.test(toString.call(v));
+const getTypeOf = (v) => toString
+    .call(v)
+    .match(/\s([^\]]+)\]/)
+    .pop()
+    .toLowerCase();
 function nodeAsRegex(node) {
     return new RegExp(node.text.replace(/(^{|}$)/g, ""));
+}
+/**
+ * Iterates over object or array, passing each key, value and parentObject to the callback
+ * @param value - to iterate
+ * @param callback - receiving key on given input value
+ */
+function forEach(parent, callback) {
+    if (Array.isArray(parent)) {
+        parent.forEach(callback);
+    }
+    else if (Object.prototype.toString.call(parent) === "[object Object]") {
+        Object.keys(parent).forEach(function (key) {
+            callback(parent[key], key, parent);
+        });
+    }
+}
+/**
+ * Returns all keys of the given input data
+ * @param  value
+ * @return {Array} containing keys of given value
+ */
+function getKeys(value) {
+    if (Array.isArray(value)) {
+        return value.map(function (value, index) {
+            return `${index}`;
+        });
+    }
+    if (Object.prototype.toString.call(value) === "[object Object]") {
+        return Object.keys(value);
+    }
+    return [];
 }
 const cache = {
     mem: [],
@@ -22,18 +56,23 @@ const cache = {
     },
     reset() {
         cache.mem.length = 0;
-    }
+    },
 };
 const expand = {
     any(node, entry) {
         const value = entry[VALUE_INDEX];
-        return o.keys(value)
+        return (getKeys(value)
             // .map(prop => cache.get(entry, prop));
-            .map(prop => [value[prop], prop, value, join(entry[POINTER_INDEX], prop)]);
+            .map((prop) => [
+            value[prop],
+            prop,
+            value,
+            join(entry[POINTER_INDEX], prop),
+        ]));
     },
     all(node, entry) {
         const result = [entry];
-        o.forEach(entry[VALUE_INDEX], (value, prop) => {
+        forEach(entry[VALUE_INDEX], (value, prop) => {
             const childEntry = cache.get(entry, prop);
             // const childEntry = [value, prop, entry[VALUE_INDEX], join(entry[POINTER_INDEX], prop)];
             childEntry && result.push(...expand.all(node, childEntry));
@@ -43,10 +82,15 @@ const expand = {
     regex(node, entry) {
         const regex = nodeAsRegex(node);
         const value = entry[VALUE_INDEX];
-        return o.keys(value)
-            .filter(prop => regex.test(prop))
-            .map(prop => [value[prop], prop, value, join(entry[POINTER_INDEX], prop)]);
-    }
+        return getKeys(value)
+            .filter((prop) => regex.test(prop))
+            .map((prop) => [
+            value[prop],
+            prop,
+            value,
+            join(entry[POINTER_INDEX], prop),
+        ]);
+    },
 };
 const select = {
     // alias to property (but escaped)
@@ -58,7 +102,7 @@ const select = {
                 entry[VALUE_INDEX][prop],
                 prop,
                 entry[VALUE_INDEX],
-                join(entry[POINTER_INDEX], prop)
+                join(entry[POINTER_INDEX], prop),
             ];
         }
     },
@@ -75,10 +119,10 @@ const select = {
     lookahead: (node, entry) => {
         let valid = true;
         let or = false;
-        node.children.forEach(expr => {
+        node.children.forEach((expr) => {
             if (expr.type === "expression") {
                 const isValid = select.expression(expr, entry) !== undefined;
-                valid = or === true ? (valid || isValid) : valid && isValid;
+                valid = or === true ? valid || isValid : valid && isValid;
             }
             else {
                 or = expr.type === "orExpr";
@@ -95,14 +139,14 @@ const select = {
             return undefined;
         }
         return expressionMatches(value[prop], cmp, test) ? entry : undefined;
-    }
+    },
 };
 function expressionMatches(value, cmp, test) {
     if (cmp === undefined) {
         return value !== undefined;
     }
     let valid;
-    const valueString = "" + value;
+    const valueString = `${value}`;
     if (test.type === "regex") {
         const regex = nodeAsRegex(test);
         valid = regex.test(valueString);

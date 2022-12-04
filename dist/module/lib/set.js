@@ -1,9 +1,13 @@
-import { propertyRegex } from "./parser/grammar";
-import split from "./split";
-import get, { ReturnType } from "./get";
+import { get, ReturnType } from "./get";
+import { propertyRegex } from "./parser/jsonQueryGrammar";
+import { split } from "./split";
 const cp = (v) => JSON.parse(JSON.stringify(v));
 const toString = Object.prototype.toString;
-const getType = v => toString.call(v).match(/\s([^\]]+)\]/).pop().toLowerCase();
+const getType = (v) => toString
+    .call(v)
+    .match(/\s([^\]]+)\]/)
+    .pop()
+    .toLowerCase();
 const isProperty = new RegExp(`^("[^"]+"|${propertyRegex})$`);
 const ignoreTypes = ["string", "number", "boolean", "null"];
 const isArray = /^\[\d*\]$/;
@@ -14,7 +18,9 @@ function convertToIndex(index) {
     return parseInt(index.replace(/^(\[|\]$)/, ""));
 }
 function removeEscape(property) {
-    return isEscaped.test(property) ? property.replace(/(^"|"$)/g, "") : property;
+    return isEscaped.test(property)
+        ? property.replace(/(^"|"$)/g, "")
+        : property;
 }
 function insert(array, index, value) {
     if (array.length <= index) {
@@ -26,7 +32,7 @@ function insert(array, index, value) {
 }
 function select(workingSet, query) {
     const nextSet = [];
-    workingSet.forEach(d => nextSet.push(...get(d[0], query, ReturnType.ALL)));
+    workingSet.forEach((d) => nextSet.push(...get(d[0], query, ReturnType.ALL)));
     return nextSet;
 }
 function addToArray(result, index, value, force) {
@@ -38,18 +44,31 @@ function addToArray(result, index, value, force) {
         return [target[i], i, target, `${result[3]}/${i}}`];
     }
     // MERGE_ITEMS?
-    if (force == null && getType(target[index]) === "object" && getType(value) === "object") {
+    if (force == null &&
+        getType(target[index]) === "object" &&
+        getType(value) === "object") {
         return [target[index], index, target, `${result[3]}/${index}}`];
     }
-    if (force === set.INSERT_ITEMS || (force == null && arrayHasIndex.test(index))) {
+    if (force === set.INSERT_ITEMS ||
+        (force == null && arrayHasIndex.test(index))) {
         const arrayIndex = convertToIndex(index);
         insert(target, arrayIndex, value);
-        return [target[arrayIndex], arrayIndex, target, `${result[3]}/${arrayIndex}}`];
+        return [
+            target[arrayIndex],
+            arrayIndex,
+            target,
+            `${result[3]}/${arrayIndex}}`,
+        ];
     }
     if (force === set.REPLACE_ITEMS || force == null) {
         const arrayIndex = convertToIndex(index);
         target[arrayIndex] = value;
-        return [target[arrayIndex], arrayIndex, target, `${result[3]}/${arrayIndex}}`];
+        return [
+            target[arrayIndex],
+            arrayIndex,
+            target,
+            `${result[3]}/${arrayIndex}}`,
+        ];
     }
     throw new Error(`Unknown array index '${index}' with force-option '${force}'`);
 }
@@ -86,11 +105,11 @@ set.INSERT_ITEMS = InsertMode.INSERT_ITEMS;
 /**
  * Runs query on input data and assigns a value to query-results.
  * @param data - input data
- * @param queryString - gson-query string
+ * @param queryString - json-query string
  * @param value - value to assign
  * @param [force] - whether to replace or insert into arrays
  */
-export default function set(data, queryString, value, force) {
+export function set(data, queryString, value, force) {
     if (queryString == null) {
         return cp(data);
     }
@@ -107,7 +126,9 @@ export default function set(data, queryString, value, force) {
         throw new Error(`Unsupported query '${queryString}' ending with non-property`);
     }
     path.forEach((query, index) => {
-        if ("__proto__" === query || "prototyped" === query || "constructor" === query) {
+        if ("__proto__" === query ||
+            "prototyped" === query ||
+            "constructor" === query) {
             return;
         }
         if (isProperty.test(query) === false) {
@@ -130,7 +151,9 @@ export default function set(data, queryString, value, force) {
         }
         else {
             const unescapedProp = removeEscape(property);
-            if ("__proto__" === unescapedProp || "prototyped" === unescapedProp || "constructor" === unescapedProp) {
+            if ("__proto__" === unescapedProp ||
+                "prototyped" === unescapedProp ||
+                "constructor" === unescapedProp) {
                 return;
             }
             d[unescapedProp] = targetValue;

@@ -1,14 +1,14 @@
 import { parse } from "./parser";
 import { run, VALUE_INDEX, POINTER_INDEX } from "./interpreter";
 const returnTypes = {
-    value: r => r.map(e => e[VALUE_INDEX]),
-    pointer: r => r.map(e => e[POINTER_INDEX]),
-    all: r => r,
-    map: r => {
+    value: (r) => r.map((e) => e[VALUE_INDEX]),
+    pointer: (r) => r.map((e) => e[POINTER_INDEX]),
+    all: (r) => r,
+    map: (r) => {
         const map = {};
-        r.forEach(e => (map[e[POINTER_INDEX]] = e[VALUE_INDEX]));
+        r.forEach((e) => (map[e[POINTER_INDEX]] = e[VALUE_INDEX]));
         return map;
-    }
+    },
 };
 export var ReturnType;
 (function (ReturnType) {
@@ -25,10 +25,10 @@ get.MAP = ReturnType.MAP;
 /**
  * Runs query on input data and returns the results
  * @param data - input data
- * @param queryString - gson-query string
+ * @param queryString - json-query string
  * @param returnType - result format or a custom callback
  */
-export default function get(data, queryString, returnType = ReturnType.VALUE) {
+export function get(data, queryString, returnType = ReturnType.VALUE) {
     if (queryString == null) {
         return [];
     }

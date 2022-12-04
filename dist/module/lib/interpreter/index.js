@@ -19,7 +19,7 @@ function reduce(func, input, node, pointer) {
 }
 function query(data, ast, pointer) {
     let result = data;
-    ast.children.forEach(node => {
+    ast.children.forEach((node) => {
         if (expand[node.type]) {
             result = collect(expand[node.type], result, node, pointer);
         }
@@ -35,7 +35,7 @@ function query(data, ast, pointer) {
 function runPatternOnce(inputSet, ast, pointer) {
     const resultingSet = [];
     let workingSet = inputSet;
-    ast.children.forEach(node => {
+    ast.children.forEach((node) => {
         if (node.type === "orPattern") {
             resultingSet.push(...workingSet);
             workingSet = inputSet;
@@ -58,7 +58,7 @@ function getIterationCount(quantifier) {
 }
 function pattern(data, ast, pointer) {
     const result = [];
-    const quantifier = ast.children.find(node => node.type === "quantifier");
+    const quantifier = ast.children.find((node) => node.type === "quantifier");
     const iterationCount = getIterationCount(quantifier && quantifier.text);
     let workingSet = data;
     if (quantifier && quantifier.text === "*") {
@@ -74,7 +74,7 @@ function pattern(data, ast, pointer) {
 }
 function skip(data, ast, pointer) {
     let result = data;
-    ast.children.forEach(n => (result = runNode(result, n, pointer)));
+    ast.children.forEach((n) => (result = runNode(result, n, pointer)));
     return result;
 }
 function runNode(data, ast, pointer) {
@@ -93,9 +93,9 @@ function runNode(data, ast, pointer) {
     cache.mem.push(data);
     return result;
 }
-export default function run(data, ast) {
+export function run(data, ast) {
     cache.reset();
     cache.mem.push(data);
     return runNode([[data, null, null, "#"]], ast);
 }
-export { run, VALUE_INDEX, KEY_INDEX, PARENT_INDEX, POINTER_INDEX };
+export { VALUE_INDEX, KEY_INDEX, PARENT_INDEX, POINTER_INDEX };

@@ -1,7 +1,7 @@
-import get, { ReturnType, ResultCallback } from "./lib/get";
-import set from "./lib/set";
-import split from "./lib/split";
-import remove from "./lib/remove";
+import { get, ReturnType, ResultCallback } from "./lib/get";
+import { set } from "./lib/set";
+import { split } from "./lib/split";
+import { remove } from "./lib/remove";
 export { get, set, split, remove, ReturnType };
 declare const _default: {
     get: typeof get;
@@ -12,4 +12,4 @@ declare const _default: {
 };
 export default _default;
 export type { ResultCallback };
-export type { Input, JSONPointer, QueryResult } from "./lib/types";
+export type { Input, JsonPointer, QueryResult } from "./lib/types";

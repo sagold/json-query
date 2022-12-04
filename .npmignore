@@ -1,9 +1,3 @@
-/test/
-/dev/
-/release/
-/docs/
-/test/
-.*
 *.dat
 *.gz
 *.log
@@ -12,11 +6,16 @@
 *.sublime*
 *.tmp
 *.zip
+.*
 .DS_Store
 .editorconfig
 .eslintrc
 .gitignore
 .nyc_output
+/docs/
+/lib/
+/test/
+/test/
 build
 dev
 docs
@@ -25,3 +24,4 @@ test
 Thumbs.db
 tsconfig.json
 webpack.config.js
+yarn-error.log
