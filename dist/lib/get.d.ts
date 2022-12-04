@@ -5,7 +5,7 @@ export declare enum ReturnType {
     ALL = "all",
     MAP = "map"
 }
-export declare type ResultCallback = (value: any, property: string | null, parent: {
+export type ResultCallback = (value: any, property: string | null, parent: {
     [p: string]: any;
 } | Array<any> | null, pointer: JSONPointer) => any;
 /**

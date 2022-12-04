@@ -1,7 +1,6 @@
-import { remove, removeUndefinedItems } from "gson-pointer";
+import { remove, removeUndefinedItems } from "@sagold/json-pointer";
 import get, { ReturnType } from "./get";
 import { PARENT_INDEX, POINTER_INDEX } from "./interpreter/keys";
-
 
 /**
  * Runs query on input data and removes matching properties from results

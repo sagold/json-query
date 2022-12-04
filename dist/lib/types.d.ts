@@ -1,7 +1,7 @@
-export declare type Input = {
+export type Input = {
     [p: string]: any;
 } | Array<any>;
-export declare type JSONPointer = string;
-export declare type QueryResult = [any, string | null, {
+export type JSONPointer = string;
+export type QueryResult = [any, string | null, {
     [p: string]: any;
 } | Array<any> | null, JSONPointer];
