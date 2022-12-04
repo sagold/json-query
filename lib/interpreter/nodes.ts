@@ -17,23 +17,35 @@ function nodeAsRegex(node) {
 }
 
 /**
+ * Iterates over object or array, passing each key, value and parentObject to the callback
+ * @param value - to iterate
+ * @param callback - receiving key on given input value
+ */
+function forEach(parent: Record<string, unknown> | unknown[], callback) {
+    if (Array.isArray(parent)) {
+        parent.forEach(callback);
+    } else if (Object.prototype.toString.call(parent) === "[object Object]") {
+        Object.keys(parent).forEach(function (key) {
+            callback(parent[key], key, parent);
+        });
+    }
+}
+
+/**
  * Returns all keys of the given input data
- *
  * @param  value
  * @return {Array} containing keys of given value
  */
-function getKeys(value: unknown) {
-    let keys;
+function getKeys(value: unknown): string[] {
     if (Array.isArray(value)) {
-        keys = value.map(function (value, index) {
-            return index;
+        return value.map(function (value, index) {
+            return `${index}`;
         });
-    } else if (Object.prototype.toString.call(value) === "[object Object]") {
-        return Object.keys(value);
-    } else {
-        keys = [];
     }
-    return keys;
+    if (Object.prototype.toString.call(value) === "[object Object]") {
+        return Object.keys(value);
+    }
+    return [];
 }
 
 const cache = {
@@ -70,7 +82,7 @@ const expand = {
 
     all(node: IToken, entry) {
         const result = [entry];
-        o.forEach(entry[VALUE_INDEX], (value, prop) => {
+        forEach(entry[VALUE_INDEX], (value, prop) => {
             const childEntry = cache.get(entry, prop);
             // const childEntry = [value, prop, entry[VALUE_INDEX], join(entry[POINTER_INDEX], prop)];
             childEntry && result.push(...expand.all(node, childEntry));
@@ -154,15 +166,13 @@ function expressionMatches(value, cmp, test) {
     }
 
     let valid;
-    const valueString = "" + value;
-
+    const valueString = `${value}`;
     if (test.type === "regex") {
         const regex = nodeAsRegex(test);
         valid = regex.test(valueString);
     } else {
         valid = valueString === test.text;
     }
-
     if (cmp.type === "isnot") {
         valid = valid === false && value !== undefined;
     }
