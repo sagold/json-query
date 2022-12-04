@@ -1,5 +1,7 @@
 <h1 align="left"><img src="./docs/gson-query.png" width="256" alt="gson-query"></h1>
 
+!! package `gson-query` has moved to `@sagold/json-query`. Please change package source as `gson-query` will no longer be updated.
+
 > gson-query lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data
 
 **npm package** `gson-query`. An es5-version is bundled at `dist/gson-query.js`. The command-line integration can be installed separately from [gson-query-cli](https://github.com/sagold/gson-query-cli).
