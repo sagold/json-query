@@ -1,18 +1,14 @@
-<h1 align="left"><img src="./docs/json-query.png" width="256" alt="@sagold/json-query"></h1>
+<h1 align="left"><img src="./docs/sagold-json-query.png" width="100%" alt="@sagold/json-query"></h1>
 
-> `json-query` lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data
+<p align="center"><b><code>json-query</code> lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data</b></p>
+
+<p align="center">
+    <a href="#features">features</a> | <a href="#quick-introduction">introduction</a> | <a href="#api">api</a> | <a href="#about-patterns">about patterns</a> | <a href="#further-examples">further examples</a> <a href="#breaking-changes">breaking changes</a>
+</p>
 
 install
 
 `yarn add @sagold/json-query`
-
-
-- [Features](#features)
-- [Introduction](#quick-introduction)
-- [Breaking Changes](#breaking-changes)
-- [API](#api)
-- [About patterns](#about-patterns)
-- [Further examples](#further-examples)
 
 
 ## Features
@@ -154,17 +150,6 @@ const values = get(input, "/(/a)+"); // [{ id: 2, a: { id: 3, a: 4 } }, { id: 3,
 - escape property-name: `'/root/*/"strange/property"'` is split to `["root", "*", "strange/property"]`
 - escape query-property `'/root/*?"strange/property":42'`
 - escape query-value `'/root/*?id:"#/pointer/value"'`
-
-
-## Breaking Changes
-
-- with version `v5.0.0` package has been rename to `@sagold/json-query`
-- with version `v4.0.0` (2019/10/01)
-    - the api has been simplified to methods `query.get` and `query.delete` (removed `run` and `pattern`)
-- with version `v3.0.0`
-    - the syntax has changed to es6, which might require code transpilation
-    - queries for root-pointer (`#`, `#/`, `/`) now callback root object with `(rootObject, null, null, "#")`
-- with `v2.0.0` a negated filter (lookahead), e.g. `*?valid:!true` will not return objects where `valid === undefined`. To match objects with missing properties you can still query them explicitly with `*?valid:!true||valid:undefined`
 
 
 ## API
@@ -403,3 +388,14 @@ for further examples refer to the unit tests
 - [query.get](https://github.com/sagold/json-query/blob/master/test/unit/get.test.js)
 - [query.set](https://github.com/sagold/json-query/blob/master/test/unit/set.test.js)
 - [query.split](https://github.com/sagold/json-query/blob/master/test/unit/split.test.js)
+
+
+## Breaking Changes
+
+- with version `v5.0.0` package has been rename to `@sagold/json-query`
+- with version `v4.0.0` (2019/10/01)
+    - the api has been simplified to methods `query.get` and `query.delete` (removed `run` and `pattern`)
+- with version `v3.0.0`
+    - the syntax has changed to es6, which might require code transpilation
+    - queries for root-pointer (`#`, `#/`, `/`) now callback root object with `(rootObject, null, null, "#")`
+- with `v2.0.0` a negated filter (lookahead), e.g. `*?valid:!true` will not return objects where `valid === undefined`. To match objects with missing properties you can still query them explicitly with `*?valid:!true||valid:undefined`
