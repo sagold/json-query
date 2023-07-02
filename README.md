@@ -3,7 +3,7 @@
 <p align="center"><b><code>json-query</code> lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data</b></p>
 
 <p align="center">
-    <a href="#features">features</a> | <a href="#quick-introduction">introduction</a> | <a href="#api">api</a> | <a href="#about-patterns">about patterns</a> | <a href="#further-examples">further examples</a> <a href="#breaking-changes">breaking changes</a>
+    <a href="#features">Features</a> | <a href="#quick-introduction">Introduction</a> | <a href="#api">api</a> | <a href="#about-patterns">About patterns</a> | <a href="#further-examples">Further examples</a> | <a href="#breaking-changes">Breaking changes</a>
 </p>
 
 install
