@@ -1,6 +1,6 @@
 {
     "name": "@sagold/json-query",
-    "version": "6.1.0",
+    "version": "6.1.1",
     "description": "json-pointer utilities for querying and transforming data",
     "module": "dist/module/index.js",
     "types": "dist/index.d.ts",
@@ -23,7 +23,7 @@
         "debug": "devtool node_modules/mocha/bin/_mocha -qc -- --recursive test/unit/*.test.js"
     },
     "dependencies": {
-        "@sagold/json-pointer": "^5.1.0",
+        "@sagold/json-pointer": "^5.1.1",
         "ebnf": "^1.9.1"
     },
     "devDependencies": {

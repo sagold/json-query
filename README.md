@@ -1,12 +1,12 @@
 <h1 align="left"><img src="./docs/sagold-json-query.png" width="100%" alt="@sagold/json-query"></h1>
 
-<p align="center"><b><code>json-query</code> lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data</b></p>
+<p align="left"><b><code>json-query</code> lets you quickly select values, patterns or types from json-data. Its input requires a simple string, describing a concise query into your data.</b></p>
 
 <p align="center">
     <a href="#features">Features</a> | <a href="#quick-introduction">Introduction</a> | <a href="#api">Api</a> | <a href="#about-patterns">About patterns</a> | <a href="#further-examples">Further examples</a> | <a href="#breaking-changes">Breaking changes</a>
 </p>
 
-install
+**install**
 
 `yarn add @sagold/json-query`
 
