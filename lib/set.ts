@@ -67,6 +67,7 @@ function addToArray(
         getType(target[index]) === "object" &&
         getType(value) === "object"
     ) {
+        Object.assign(target[index], value);
         return [target[index], index, target, `${result[3]}/${index}}`];
     }
 
@@ -118,7 +119,10 @@ function create<T extends WorkingSet>(
         .map((r: QueryResult) => {
             const container = keyIsArray ? [] : {};
             const o = r[0];
-            if (Array.isArray(o)) {
+            const containerType = getType(container);
+            const itemType = getType(o[query]);
+
+            if (Array.isArray(o) && itemType !== containerType) {
                 return addToArray(r, query, container, force);
             }
             o[query] = o[query] || container;

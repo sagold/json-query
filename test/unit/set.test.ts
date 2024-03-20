@@ -156,6 +156,35 @@ describe("set", () => {
             );
             expect(result).to.deep.eq({ list: [1, { value: "t" }, 3] });
         });
+
+        it("should merge into object nested in multi-level array", () => {
+            const result = set(
+                [[{ text: 'A' }, { text: 'B' } ]],
+                "#/0/1",
+                { additionalText: 'C' }
+            );
+            expect(result).to.deep.eq([[{ text: 'A' }, { text: 'B', additionalText: 'C' } ]]);
+        });
+
+        it("should replace into object nested in multi-level array", () => {
+            const result = set(
+                [[{ text: 'A' }, { text: 'B' } ]],
+                "#/0/1",
+                { additionalText: 'C' },
+                InsertMode.REPLACE_ITEMS
+            );
+            expect(result).to.deep.eq([[{ text: 'A' }, { additionalText: 'C' } ]]);
+        });
+
+        it("should insert into object nested in multi-level array", () => {
+            const result = set(
+                [[{ text: 'A' }, { text: 'B' } ]],
+                "#/0/1",
+                { additionalText: 'C' },
+                InsertMode.INSERT_ITEMS
+            );
+            expect(result).to.deep.eq([[{ text: 'A' }, { additionalText: 'C' }, { text: 'B' } ]]);
+        });
     });
 
     describe("queries", () => {
