@@ -54,14 +54,14 @@ function addToArray(
 ) {
     const target = result[0];
 
-    // append?
+    // append item?
     if (/^\[\]$/.test(index)) {
         target.push(value);
         const i = target.length - 1;
         return [target[i], i, target, `${result[3]}/${i}}`];
     }
 
-    // MERGE_ITEMS?
+    // merge array item?
     if (
         force == null &&
         getType(target[index]) === "object" &&
