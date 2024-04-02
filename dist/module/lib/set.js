@@ -37,16 +37,17 @@ function select(workingSet, query) {
 }
 function addToArray(result, index, value, force) {
     const target = result[0];
-    // append?
+    // append item?
     if (/^\[\]$/.test(index)) {
         target.push(value);
         const i = target.length - 1;
         return [target[i], i, target, `${result[3]}/${i}}`];
     }
-    // MERGE_ITEMS?
+    // merge array item?
     if (force == null &&
         getType(target[index]) === "object" &&
         getType(value) === "object") {
+        Object.assign(target[index], value);
         return [target[index], index, target, `${result[3]}/${index}}`];
     }
     if (force === set.INSERT_ITEMS ||
@@ -85,7 +86,9 @@ function create(workingSet, query, keyIsArray, force) {
         .map((r) => {
         const container = keyIsArray ? [] : {};
         const o = r[0];
-        if (Array.isArray(o)) {
+        const containerType = getType(container);
+        const itemType = getType(o[query]);
+        if (Array.isArray(o) && itemType !== containerType) {
             return addToArray(r, query, container, force);
         }
         o[query] = o[query] || container;
